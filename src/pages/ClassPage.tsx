@@ -3,65 +3,38 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Video, Calendar } from "lucide-react";
 import { CustomModal } from "../components/CustomModal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { db, collection, getDoc, doc } from "../firebase/firebaseConfig"; // Importa Firestore correctamente
 import { NavBar } from "../components/NavBar";
-
-const levelsData = {
-   1: {
-      name: "Dados",
-      teacher: "Simulaciones Básicas",
-      content: [
-         { id: 1, title: "Lanzar dos dados", description: "Simula el lanzamiento de dos dados." },
-         { id: 2, title: "Distribución de resultados", description: "Visualiza las combinaciones posibles." },
-      ],
-   },
-   2: {
-      name: "Monedas",
-      teacher: "Simulación Intermedia",
-      content: [
-         { id: 1, title: "Cara o cruz", description: "Simula un lanzamiento de monedas." },
-         { id: 2, title: "Probabilidad", description: "Calcula las probabilidades de obtener caras o cruces." },
-      ],
-   },
-   3: {
-      name: "Generación de Números Aleatorios",
-      teacher: "Teoría de Simulación",
-      content: [
-         { id: 1, title: "Generar números", description: "Obtén números aleatorios en un rango." },
-         { id: 2, title: "Histogramas", description: "Genera gráficos de las distribuciones." },
-      ],
-   },
-   4: {
-      name: "Poker",
-      teacher: "Modelos Avanzados",
-      content: [
-         { id: 1, title: "Simular manos de poker", description: "Reparte cartas y simula manos reales." },
-         { id: 2, title: "Probabilidad de ganar", description: "Calcula probabilidades para cada mano." },
-      ],
-   },
-   5: {
-      name: "Aplicación de Simulación",
-      teacher: "Proyectos Finales",
-      content: [
-         { id: 1, title: "Simulación personalizada", description: "Crea un modelo basado en tus necesidades." },
-         { id: 2, title: "Optimización", description: "Mejora tu simulación con técnicas avanzadas." },
-      ],
-   },
-};
 
 export default function ClassPage() {
    const { id } = useParams<{ id: string }>(); // Obtén el ID desde la URL
-   const level = levelsData[parseInt(id || "1")]; // Encuentra los datos del nivel actual
+   const [level, setLevel] = useState<any | null>(null); // El estado de la clase
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [isModalOpenTask, setIsModalOpenTask] = useState(false);
 
-   const handleSaveLink = (link: string) => {
-      console.log(`Enlace guardado para nivel ${id}:`, link); // Lógica de guardado
-      setIsModalOpen(false);
+   // Carga los datos de la clase desde Firestore
+   const loadClassData = async () => {
+      try {
+         const classDocRef = doc(db, "clases", id || ""); // Ref a la clase usando el ID
+         const classSnapshot = await getDoc(classDocRef); // Obtén el documento
+         if (classSnapshot.exists()) {
+            setLevel(classSnapshot.data()); // Guardamos los datos de la clase
+         } else {
+            console.log("Clase no encontrada");
+         }
+      } catch (err) {
+         console.error("Error cargando la clase:", err);
+      }
    };
 
+   // Llama a la función para cargar la clase cuando el componente se monta
+   useEffect(() => {
+      loadClassData();
+   }, [id]); // Solo se vuelve a ejecutar si el ID cambia
+
    if (!level) {
-      return <div>Error: Nivel no encontrado</div>;
+      return <div>Cargando clase...</div>; // Mostrar mientras se carga la clase
    }
 
    return (
@@ -78,15 +51,19 @@ export default function ClassPage() {
                   <CardTitle>Actividades</CardTitle>
                </CardHeader>
                <CardContent>
-                  {level.content.map((item) => (
-                     <div key={item.id} className="flex justify-between items-center mb-4 last:mb-0">
-                        <div>
-                           <h4 className="font-semibold">{item.title}</h4>
-                           <p className="text-sm text-gray-500">{item.description}</p>
+                  {level.content && level.content.length > 0 ? (
+                     level.content.map((item: any) => (
+                        <div key={item.id} className="flex justify-between items-center mb-4 last:mb-0">
+                           <div>
+                              <h4 className="font-semibold">{item.title}</h4>
+                              <p className="text-sm text-gray-500">{item.description}</p>
+                           </div>
+                           <Button variant="outline">Ver detalles</Button>
                         </div>
-                        <Button variant="outline">Ver detalles</Button>
-                     </div>
-                  ))}
+                     ))
+                  ) : (
+                     <p>No hay actividades disponibles para esta clase.</p>
+                  )}
                </CardContent>
             </Card>
 
@@ -109,7 +86,7 @@ export default function ClassPage() {
             </Card>
          </div>
          {/* Modal de Añadir Enlace */}
-         <CustomModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSave={handleSaveLink} />
+         <CustomModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSave={(link: string) => console.log(`Enlace guardado: ${link}`)} />
          <NavBar></NavBar>
       </div>
    );
