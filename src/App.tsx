@@ -1,7 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AdmHomePage from "./pages/AdmHomePage";
+import AdmPageGrupos from "./pages/AdmPageGrupos"; // Importamos la página de grupos
 import ClassPage from "./pages/ClassPage";
-import { Sidebar } from "./components/SideBar";
+import HomePage from "./pages/AdmHomePage"; // Página Home
+import { Sidebar } from "./components/SideBar"; // Sidebar si es necesario
 
 function App() {
    return (
@@ -10,8 +11,14 @@ function App() {
             <Sidebar />
             <div className="flex-1 p-4">
                <Routes>
-                  <Route path="/" element={<AdmHomePage />} />
+                  {/* Ruta predeterminada */}
+                  <Route path="/" element={<AdmPageGrupos />} />
+
+                  {/* Ruta para ver los detalles de clases */}
                   <Route path="/class/:id" element={<ClassPage />} />
+
+                  {/* Ruta para la página Home (redirección desde Ver Grupo) */}
+                  <Route path="/homepage" element={<HomePage />} />
                </Routes>
             </div>
          </div>
@@ -20,3 +27,4 @@ function App() {
 }
 
 export default App;
+
