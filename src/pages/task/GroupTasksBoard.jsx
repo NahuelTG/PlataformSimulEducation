@@ -87,12 +87,62 @@ const GroupTasksBoard = () => {
           </Table>
         </TableContainer>
       </Box>
-        <Modal
-            open={openModal}
-            onClose={() => setOpenModal(false)}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-        >
+      <Modal
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        aria-labelledby="add-task-modal-title"
+        aria-describedby="add-task-modal-description"
+      >
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 400,
+          bgcolor: 'background.paper',
+          borderRadius: 2,
+          boxShadow: 24,
+          p: 4,
+        }}>
+          <Typography variant="h6" id="add-task-modal-title">
+            Agregar Tarea/Publicación
+          </Typography>
+          <TextField
+            fullWidth
+            label="Título"
+            value={newTaskTitle}
+            onChange={(e) => setNewTaskTitle(e.target.value)}
+            margin="normal"
+          />
+          <TextField
+            fullWidth
+            label="Contenido"
+            value={newTaskContent}
+            onChange={(e) => setNewTaskContent(e.target.value)}
+            margin="normal"
+            multiline
+            rows={4}
+          />
+          <TextField
+            fullWidth
+            select
+            label="Tipo"
+            value={newTaskType}
+            onChange={(e) => setNewTaskType(e.target.value)}
+            margin="normal"
+            SelectProps={{
+              native: true,
+            }}
+          >
+            <option value="announcement">Anuncio</option>
+            <option value="task">Tarea</option>
+          </TextField>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Button onClick={() => setOpenModal(false)} sx={{ mr: 2 }}>Cancelar</Button>
+            <Button variant="contained" onClick={handleAddTask}>Agregar</Button>
+          </Box>
+        </Box>
+      </Modal>
     </Container>
     </div>
   );
