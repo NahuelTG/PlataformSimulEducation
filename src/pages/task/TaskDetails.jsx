@@ -41,9 +41,9 @@ const TaskDetails = () => {
         const submissionsData = await getSubmissionsData();
         setSubmissions(submissionsData);
         setFilteredSubmissions(submissionsData);
-        setLoading(false);
       } catch (error) {
         console.error('Error fetching submissions:', error);
+      } finally {
         setLoading(false);
       }
     };
@@ -52,26 +52,17 @@ const TaskDetails = () => {
   }, [groupId, taskId]);
 
   const getSubmissionsData = async () => {
-    try {
-      const submissions = [];
-      const submissionsCollectionRef = collection(firestore, 'groups', groupId, 'tasks', taskId, 'submissions');
-      const submissionsSnapshot = await getDocs(submissionsCollectionRef);
-
-      for (const submissionDoc of submissionsSnapshot.docs) {
-        const submissionData = submissionDoc.data();
-        submissions.push({
-          userId: submissionDoc.id,
-          fileUrl: submissionData.fileUrl,
-          submittedAt: submissionData.timestamp.toDate().toLocaleString(),
-          grade: submissionData.grade
-        });
-      }
-
-      return submissions;
-    } catch (error) {
-      console.error('Error fetching submissions:', error);
-      return [];
-    }
+    const submissionsCollectionRef = collection(firestore, 'groups', groupId, 'tasks', taskId, 'submissions');
+    const submissionsSnapshot = await getDocs(submissionsCollectionRef);
+    return submissionsSnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        userId: doc.id,
+        fileUrl: data.fileUrl,
+        submittedAt: data.timestamp.toDate().toLocaleString(),
+        grade: data.grade
+      };
+    });
   };
 
   const handleOpenGradeModal = (submission) => {
@@ -86,29 +77,28 @@ const TaskDetails = () => {
     setGrade('');
   };
 
-  const handleUpdateGrade = async () => {
-    if (currentSubmission) {
-      const submissionDocRef = doc(firestore, 'groups', groupId, 'tasks', taskId, 'submissions', currentSubmission.userId);
-      await updateDoc(submissionDocRef, { grade: grade });
-      setSubmissions(submissions.map(sub => sub.userId === currentSubmission.userId ? { ...sub, grade: grade } : sub));
-      setFilteredSubmissions(submissions.map(sub => sub.userId === currentSubmission.userId ? { ...sub, grade: grade } : sub));
-      handleCloseGradeModal();
-    }
+  const updateSubmissionGrade = async (newGrade) => {
+    if (!currentSubmission) return;
+
+    const submissionDocRef = doc(firestore, 'groups', groupId, 'tasks', taskId, 'submissions', currentSubmission.userId);
+    await updateDoc(submissionDocRef, { grade: newGrade });
+
+    // Update state for UI
+    const updatedSubmissions = submissions.map(sub => 
+      sub.userId === currentSubmission.userId ? { ...sub, grade: newGrade } : sub
+    );
+    setSubmissions(updatedSubmissions);
+    setFilteredSubmissions(updatedSubmissions);
+    handleCloseGradeModal();
   };
 
-  const handleSetNotGraded = async () => {
-    if (currentSubmission) {
-      const submissionDocRef = doc(firestore, 'groups', groupId, 'tasks', taskId, 'submissions', currentSubmission.userId);
-      await updateDoc(submissionDocRef, { grade: 'none' });
-      setSubmissions(submissions.map(sub => sub.userId === currentSubmission.userId ? { ...sub, grade: 'none' } : sub));
-      setFilteredSubmissions(submissions.map(sub => sub.userId === currentSubmission.userId ? { ...sub, grade: 'none' } : sub));
-      handleCloseGradeModal();
-    }
-  };
+  const handleUpdateGrade = () => updateSubmissionGrade(grade);
+  const handleSetNotGraded = () => updateSubmissionGrade('none');
 
   const handleFilterChange = (event) => {
     const value = event.target.value;
     setFilter(value);
+
     if (value === 'graded') {
       setFilteredSubmissions(submissions.filter(submission => submission.grade !== 'none'));
     } else if (value === 'not_graded') {
@@ -120,74 +110,69 @@ const TaskDetails = () => {
 
   if (loading) {
     return (
-      <div className='list-container'>
-        <Container>
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-            <CircularProgress />
-          </Box>
-        </Container>
-      </div>
+      <Container>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+          <CircularProgress />
+        </Box>
+      </Container>
     );
   }
 
   return (
-    <div className='list-container'>
-      <Container>
-        <Box sx={{ borderRadius: 2, boxShadow: 3, padding: 3, backgroundColor: 'white', marginTop: '100px', marginBottom: '100px' }}>
-          <Typography variant="h4" gutterBottom>
-            Entregas
-          </Typography>
-          <FormControl sx={{ marginBottom: 2, minWidth: 120 }}>
-            <InputLabel>Filtros</InputLabel>
-            <div style={{marginBottom: '5px'}}></div>
-            <Select value={filter} onChange={handleFilterChange}>
-              <MenuItem value="all">Todas</MenuItem>
-              <MenuItem value="graded">Calificadas</MenuItem>
-              <MenuItem value="not_graded">No Calificadas</MenuItem>
-            </Select>
-          </FormControl>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
+    <Container>
+      <Box sx={{ borderRadius: 2, boxShadow: 3, padding: 3, backgroundColor: 'white', marginTop: '100px', marginBottom: '100px' }}>
+        <Typography variant="h4" gutterBottom>
+          Entregas
+        </Typography>
+        <FormControl sx={{ marginBottom: 2, minWidth: 120 }}>
+          <InputLabel>Filtros</InputLabel>
+          <Select value={filter} onChange={handleFilterChange}>
+            <MenuItem value="all">Todas</MenuItem>
+            <MenuItem value="graded">Calificadas</MenuItem>
+            <MenuItem value="not_graded">No Calificadas</MenuItem>
+          </Select>
+        </FormControl>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>UID Estudiante</TableCell>
+                <TableCell>Fecha de Entrega</TableCell>
+                <TableCell>Estado</TableCell>
+                <TableCell>Link de Entrega</TableCell>
+                <TableCell>Acciones</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredSubmissions.length === 0 ? (
                 <TableRow>
-                  <TableCell>UID Estudiante</TableCell>
-                  <TableCell>Fecha de Entrega</TableCell>
-                  <TableCell>Estado</TableCell>
-                  <TableCell>Link de Entrega</TableCell>
-                  <TableCell>Acciones</TableCell>
+                  <TableCell colSpan={5} align="center">
+                    No hay entregas disponibles
+                  </TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredSubmissions.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={5} align="center">
-                      No hay entregas disponibles
+              ) : (
+                filteredSubmissions.map((submission, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{submission.userId}</TableCell>
+                    <TableCell>{submission.submittedAt}</TableCell>
+                    <TableCell>
+                      {submission.grade === 'none' ? '?' : <span style={{ color: 'green' }}>✔</span>}
+                    </TableCell>
+                    <TableCell>
+                      <a href={submission.fileUrl} target="_blank" rel="noopener noreferrer">Ver Entrega</a>
+                    </TableCell>
+                    <TableCell>
+                      <IconButton color="primary" onClick={() => handleOpenGradeModal(submission)}>
+                        <AssignmentTurnedInIcon />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
-                ) : (
-                  filteredSubmissions.map((submission, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{submission.userId}</TableCell>
-                      <TableCell>{submission.submittedAt}</TableCell>
-                      <TableCell>
-                        {submission.grade === 'none' ? '?' : <span style={{ color: 'green' }}>✔</span>}
-                      </TableCell>
-                      <TableCell>
-                        <a href={submission.fileUrl} target="_blank" rel="noopener noreferrer">Ver Entrega</a>
-                      </TableCell>
-                      <TableCell>
-                        <IconButton color="primary" onClick={() => handleOpenGradeModal(submission)}>
-                          <AssignmentTurnedInIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
-      </Container>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
 
       <Modal
         open={openGradeModal}
@@ -232,7 +217,7 @@ const TaskDetails = () => {
           </Button>
         </Box>
       </Modal>
-    </div>
+    </Container>
   );
 };
 
