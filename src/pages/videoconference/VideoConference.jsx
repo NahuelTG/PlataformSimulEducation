@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, { useState, useRef, useEffect, useContext, useCallback } from 'react';
 import Peer from 'peerjs';
 import { UserContext } from '../../context/UserContext';
 import { collection, getDocs } from "firebase/firestore";
@@ -25,24 +25,20 @@ const VideoCall = () => {
   const { currentUser } = useContext(UserContext);
   const uidf = currentUser.uid;
 
+  // Fetch users list
   useEffect(() => {
     const fetchUsers = async () => {
       const querySnapshot = await getDocs(collection(firestore, "users"));
       const usersList = [];
       const usernameCount = {};
 
-      // First pass to count usernames
       querySnapshot.forEach((doc) => {
         const user = doc.data();
         if (user.uid !== currentUser.uid && user.role !== 'admin') {
-          if (!usernameCount[user.username]) {
-            usernameCount[user.username] = 0;
-          }
-          usernameCount[user.username]++;
+          usernameCount[user.username] = (usernameCount[user.username] || 0) + 1;
         }
       });
 
-      // Second pass to create user list with email for duplicates
       querySnapshot.forEach((doc) => {
         const user = doc.data();
         if (user.uid !== currentUser.uid && user.role !== 'admin') {
@@ -65,31 +61,12 @@ const VideoCall = () => {
     fetchUsers();
   }, [currentUser.uid]);
 
+  // Initialize peer on component mount
   useEffect(() => {
     const newPeer = new Peer(uidf);
     setPeer(newPeer);
 
-    newPeer.on('call', (call) => {
-      navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-        setLocalStream(stream);
-        localVideoRef.current.srcObject = stream;
-        call.answer(stream);
-        call.on('stream', (remoteStream) => {
-          setRemoteStream(remoteStream);
-          remoteVideoRef.current.srcObject = remoteStream;
-        });
-
-        call.on('close', () => {
-          // Handle the call close event
-          window.location.reload();
-        });
-
-        call.on('error', () => {
-          // Handle the call error event
-          window.location.reload();
-        });
-      });
-    });
+    newPeer.on('call', handleIncomingCall);
 
     return () => {
       if (localStream) {
@@ -99,12 +76,38 @@ const VideoCall = () => {
     };
   }, [uidf]);
 
-  // Monitor remoteStream and reload the page if the stream is lost after being established
+  // Handle incoming call
+  const handleIncomingCall = useCallback((call) => {
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        setLocalStream(stream);
+        localVideoRef.current.srcObject = stream;
+
+        call.answer(stream);
+        call.on('stream', (remoteStream) => {
+          setRemoteStream(remoteStream);
+          remoteVideoRef.current.srcObject = remoteStream;
+        });
+
+        call.on('close', handleCallEnd);
+        call.on('error', handleCallError);
+      });
+  }, []);
+
+  // Handle the call close
+  const handleCallEnd = useCallback(() => {
+    window.location.reload();
+  }, []);
+
+  // Handle errors during the call
+  const handleCallError = useCallback(() => {
+    window.location.reload();
+  }, []);
+
+  // Monitor remote stream to handle disconnections
   useEffect(() => {
     if (remoteStream) {
-      const onStreamEnded = () => {
-        window.location.reload();
-      };
+      const onStreamEnded = () => window.location.reload();
 
       remoteStream.getTracks().forEach((track) => {
         track.addEventListener('ended', onStreamEnded);
@@ -118,32 +121,29 @@ const VideoCall = () => {
     }
   }, [remoteStream]);
 
+  // Start a call
   const startCall = () => {
     if (remoteUserId.trim() !== '') {
-      navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-        setLocalStream(stream);
-        localVideoRef.current.srcObject = stream;
-        const call = peer.call(remoteUserId, stream);
-        call.on('stream', (remoteStream) => {
-          setRemoteStream(remoteStream);
-          remoteVideoRef.current.srcObject = remoteStream;
-        });
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+          setLocalStream(stream);
+          localVideoRef.current.srcObject = stream;
 
-        call.on('close', () => {
-          // Handle the call close event
-          window.location.reload();
-        });
+          const call = peer.call(remoteUserId, stream);
+          call.on('stream', (remoteStream) => {
+            setRemoteStream(remoteStream);
+            remoteVideoRef.current.srcObject = remoteStream;
+          });
 
-        call.on('error', () => {
-          // Handle the call error event
-          window.location.reload();
+          call.on('close', handleCallEnd);
+          call.on('error', handleCallError);
         });
-      });
     } else {
       alert('Please enter a valid user ID to call.');
     }
   };
 
+  // End the call
   const endCall = () => {
     if (localStream) {
       localStream.getTracks().forEach((track) => track.stop());
@@ -171,9 +171,7 @@ const VideoCall = () => {
       <Autocomplete
         options={users}
         getOptionLabel={(option) => option.label}
-        onChange={(event, newValue) => {
-          setRemoteUserId(newValue ? newValue.value : '');
-        }}
+        onChange={(event, newValue) => setRemoteUserId(newValue ? newValue.value : '')}
         renderInput={(params) => <TextField {...params} label="Select User" variant="outlined" />}
         style={{ marginTop: 20, marginBottom: 20 }}
       />
