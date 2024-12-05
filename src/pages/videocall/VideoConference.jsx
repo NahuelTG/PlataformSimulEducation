@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import Peer from 'peerjs';
 import { UserContext } from '../../context/UserContext';
 import { collection, getDocs } from "firebase/firestore";
@@ -10,7 +10,7 @@ import CallEndIcon from '@mui/icons-material/CallEnd';
 const StyledButton = styled(Button)(({ theme }) => ({
   backgroundColor: 'red',
   '&:hover': {
-    backgroundColor: 'green',
+    backgroundColor: 'darkred',
   },
 }));
 
@@ -25,20 +25,24 @@ const VideoCall = () => {
   const { currentUser } = useContext(UserContext);
   const uidf = currentUser.uid;
 
-  // Fetch users list
   useEffect(() => {
     const fetchUsers = async () => {
       const querySnapshot = await getDocs(collection(firestore, "users"));
       const usersList = [];
       const usernameCount = {};
 
+      // First pass to count usernames
       querySnapshot.forEach((doc) => {
         const user = doc.data();
         if (user.uid !== currentUser.uid && user.role !== 'admin') {
-          usernameCount[user.username] = (usernameCount[user.username] || 0) + 1;
+          if (!usernameCount[user.username]) {
+            usernameCount[user.username] = 0;
+          }
+          usernameCount[user.username]++;
         }
       });
 
+      // Second pass to create user list with email for duplicates
       querySnapshot.forEach((doc) => {
         const user = doc.data();
         if (user.uid !== currentUser.uid && user.role !== 'admin') {
@@ -61,12 +65,31 @@ const VideoCall = () => {
     fetchUsers();
   }, [currentUser.uid]);
 
-  // Initialize peer on component mount
   useEffect(() => {
     const newPeer = new Peer(uidf);
     setPeer(newPeer);
 
-    newPeer.on('call', handleIncomingCall);
+    newPeer.on('call', (call) => {
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+        setLocalStream(stream);
+        localVideoRef.current.srcObject = stream;
+        call.answer(stream);
+        call.on('stream', (remoteStream) => {
+          setRemoteStream(remoteStream);
+          remoteVideoRef.current.srcObject = remoteStream;
+        });
+
+        call.on('close', () => {
+          // Handle the call close event
+          window.location.reload();
+        });
+
+        call.on('error', () => {
+          // Handle the call error event
+          window.location.reload();
+        });
+      });
+    });
 
     return () => {
       if (localStream) {
@@ -76,38 +99,12 @@ const VideoCall = () => {
     };
   }, [uidf]);
 
-  // Handle incoming call
-  const handleIncomingCall = useCallback((call) => {
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-      .then((stream) => {
-        setLocalStream(stream);
-        localVideoRef.current.srcObject = stream;
-
-        call.answer(stream);
-        call.on('stream', (remoteStream) => {
-          setRemoteStream(remoteStream);
-          remoteVideoRef.current.srcObject = remoteStream;
-        });
-
-        call.on('close', handleCallEnd);
-        call.on('error', handleCallError);
-      });
-  }, []);
-
-  // Handle the call close
-  const handleCallEnd = useCallback(() => {
-    window.location.reload();
-  }, []);
-
-  // Handle errors during the call
-  const handleCallError = useCallback(() => {
-    window.location.reload();
-  }, []);
-
-  // Monitor remote stream to handle disconnections
+  // Monitor remoteStream and reload the page if the stream is lost after being established
   useEffect(() => {
     if (remoteStream) {
-      const onStreamEnded = () => window.location.reload();
+      const onStreamEnded = () => {
+        window.location.reload();
+      };
 
       remoteStream.getTracks().forEach((track) => {
         track.addEventListener('ended', onStreamEnded);
@@ -121,29 +118,32 @@ const VideoCall = () => {
     }
   }, [remoteStream]);
 
-  // Start a call
   const startCall = () => {
     if (remoteUserId.trim() !== '') {
-      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-        .then((stream) => {
-          setLocalStream(stream);
-          localVideoRef.current.srcObject = stream;
-
-          const call = peer.call(remoteUserId, stream);
-          call.on('stream', (remoteStream) => {
-            setRemoteStream(remoteStream);
-            remoteVideoRef.current.srcObject = remoteStream;
-          });
-
-          call.on('close', handleCallEnd);
-          call.on('error', handleCallError);
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+        setLocalStream(stream);
+        localVideoRef.current.srcObject = stream;
+        const call = peer.call(remoteUserId, stream);
+        call.on('stream', (remoteStream) => {
+          setRemoteStream(remoteStream);
+          remoteVideoRef.current.srcObject = remoteStream;
         });
+
+        call.on('close', () => {
+          // Handle the call close event
+          window.location.reload();
+        });
+
+        call.on('error', () => {
+          // Handle the call error event
+          window.location.reload();
+        });
+      });
     } else {
       alert('Please enter a valid user ID to call.');
     }
   };
 
-  // End the call
   const endCall = () => {
     if (localStream) {
       localStream.getTracks().forEach((track) => track.stop());
@@ -171,18 +171,20 @@ const VideoCall = () => {
       <Autocomplete
         options={users}
         getOptionLabel={(option) => option.label}
-        onChange={(event, newValue) => setRemoteUserId(newValue ? newValue.value : '')}
+        onChange={(event, newValue) => {
+          setRemoteUserId(newValue ? newValue.value : '');
+        }}
         renderInput={(params) => <TextField {...params} label="Select User" variant="outlined" />}
         style={{ marginTop: 20, marginBottom: 20 }}
       />
       <Button variant="contained" color="primary" onClick={startCall} style={{ marginRight: 10 }}>
-        Comenzar llamada
+        Iniciar llamada
       </Button>
       <StyledButton variant="contained" onClick={endCall} startIcon={<CallEndIcon />}>
-        Finalizar llamada
+        Colgar llamada
       </StyledButton>
       <Typography variant="body1" style={{ marginTop: 20 }}>
-        Ambos usuarios deben estar en la ventana de VideoCall. Selecciona un usuario y haz clic en "Iniciar llamada".
+        Ambos usuarios deben estar en la ventana de VideoCall para que la funcionalidad funcione. Selecciona un usuario y haz clic en "Iniciar llamada".
       </Typography>
     </div>
   );
