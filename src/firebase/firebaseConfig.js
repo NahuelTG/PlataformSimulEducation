@@ -7,14 +7,14 @@ import { getStorage } from 'firebase/storage';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyCEVJvMY7HUerIycZe3rJVwWeiEJWAcnjc",
-    authDomain: "plataforma-educativa-tss.firebaseapp.com",
-    databaseURL: "https://plataforma-educativa-tss-default-rtdb.firebaseio.com/",
-    projectId: "plataforma-educativa-tss",
-    storageBucket: "plataforma-educativa-tss.firebasestorage.app",
-    messagingSenderId: "735088978265",
-    appId: "1:735088978265:web:635b640a72474e95f74448",
-};
+    apiKey: "AIzaSyCCqNHo8BI54sIVDKKMzjZHSdYqXbbkHHs",
+    authDomain: "proyectotss-a9125.firebaseapp.com",
+    projectId: "proyectotss-a9125",
+    storageBucket: "proyectotss-a9125.firebasestorage.app",
+    messagingSenderId: "734484557975",
+    appId: "1:734484557975:web:57021446ea928dc70339d2",
+    measurementId: "G-VE1E5WBMQD"
+  };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
