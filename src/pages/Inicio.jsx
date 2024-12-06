@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { Grid, Card, CardContent, CardActions, Typography, Button, Modal, TextField, Box, useMediaQuery, useTheme } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Grid, Typography, Modal, TextField, Box, Button, useMediaQuery, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { firestore, storage } from '../connection/firebaseConfig';
-import { collection, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore";
-import { ref, listAll, deleteObject } from "firebase/storage";
+import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { ref, listAll, deleteObject } from 'firebase/storage';
+import GroupCard from '../components/GroupCard';
 
 const Inicio = () => {
     const [groups, setGroups] = useState([]);
@@ -18,36 +19,48 @@ const Inicio = () => {
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-    React.useEffect(() => {
+    useEffect(() => {
         const fetchGroups = async () => {
-            const querySnapshot = await getDocs(collection(firestore, "groups"));
-            const groupsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setGroups(groupsData);
+            try {
+                const querySnapshot = await getDocs(collection(firestore, 'groups'));
+                const groupsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setGroups(groupsData);
+            } catch (error) {
+                console.error('Error fetching groups:', error);
+            }
         };
         fetchGroups();
     }, []);
 
     const deleteFolderContents = async (folderRef) => {
-        const listResponse = await listAll(folderRef);
-        const deletePromises = listResponse.items.map((itemRef) => deleteObject(itemRef));
-        const subfolderPromises = listResponse.prefixes.map((subfolderRef) => deleteFolderContents(subfolderRef));
-        await Promise.all([...deletePromises, ...subfolderPromises]);
+        try {
+            const listResponse = await listAll(folderRef);
+            const deletePromises = listResponse.items.map(itemRef => deleteObject(itemRef));
+            const subfolderPromises = listResponse.prefixes.map(subfolderRef => deleteFolderContents(subfolderRef));
+            await Promise.all([...deletePromises, ...subfolderPromises]);
+        } catch (error) {
+            console.error('Error deleting folder contents:', error);
+        }
     };
 
     const deleteGroup = async () => {
         if (groupToDelete) {
             try {
-                const groupDocRef = doc(firestore, "groups", groupToDelete);
+                // Elimina el documento de Firestore primero.
+                const groupDocRef = doc(firestore, 'groups', groupToDelete);
                 await deleteDoc(groupDocRef);
+
+                // Muestra el alert antes de la eliminación de los archivos.
+                alert('Grupo eliminado exitosamente');
+                setOpenDeleteModal(false);
 
                 const groupStorageRef = ref(storage, `groups/${groupToDelete}`);
                 await deleteFolderContents(groupStorageRef);
 
                 setGroups(groups.filter(group => group.id !== groupToDelete));
-                setOpenDeleteModal(false);
-                alert('Grupo eliminado exitosamente');
+
             } catch (error) {
-                console.error("Error eliminando el grupo: ", error);
+                console.error('Error deleting group:', error);
                 alert('Hubo un error eliminando el grupo');
             }
         }
@@ -68,7 +81,7 @@ const Inicio = () => {
 
     const handleEditSave = async () => {
         try {
-            const groupDocRef = doc(firestore, "groups", editGroupId);
+            const groupDocRef = doc(firestore, 'groups', editGroupId);
             await updateDoc(groupDocRef, {
                 groupName: editGroupName,
                 groupDescription: editGroupDescription,
@@ -78,7 +91,7 @@ const Inicio = () => {
             setOpenEditModal(false);
             alert('Grupo actualizado exitosamente');
         } catch (error) {
-            console.error("Error actualizando el grupo: ", error);
+            console.error('Error updating group:', error);
             alert('Hubo un error actualizando el grupo');
         }
     };
@@ -103,97 +116,11 @@ const Inicio = () => {
             <Grid container spacing={3} sx={{ flexDirection: isSmallScreen ? 'column' : 'row' }}>
                 {groups.map((group) => (
                     <Grid item xs={12} sm={6} md={4} key={group.id} sx={{ marginBottom: isSmallScreen ? 2 : 0 }}>
-                        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', padding: 2 }}>
-                            <CardContent sx={{ flex: 1 }}>
-                                {group.imageUrl && (
-                                    <Box
-                                        component="img"
-                                        src={group.imageUrl}
-                                        alt={group.groupName}
-                                        sx={{
-                                            width: '100%',
-                                            height: 200,
-                                            objectFit: 'cover',
-                                            borderRadius: '4px',
-                                            mb: 2,
-                                        }}
-                                    />
-                                )}
-                                <Typography variant="h6" gutterBottom>
-                                    {group.groupName}
-                                </Typography>
-                                <Typography variant="body2" color="textSecondary" sx={{
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    display: '-webkit-box',
-                                    WebkitLineClamp: 3,
-                                    WebkitBoxOrient: 'vertical',
-                                    marginBottom: 1,
-                                }}>
-                                    {group.groupDescription}
-                                </Typography>
-                            </CardContent>
-                            <CardActions
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: isSmallScreen ? 'column' : 'row',
-                                    gap: 1,
-                                    padding: 1,
-                                    justifyContent: 'space-between',
-                                }}
-                            >
-                                <Button
-                                    variant="contained"
-                                    sx={{
-                                        backgroundColor: 'black',
-                                        color: 'white',
-                                        flex: 1,
-                                        width: isSmallScreen ? '100%' : 'auto',
-                                        '&:hover': {
-                                            backgroundColor: 'darkgray',
-                                        },
-                                        textTransform: 'none',
-                                        marginBottom: isSmallScreen ? 1 : 0,
-                                    }}
-                                    onClick={() => handleEdit(group)}
-                                >
-                                    Editar
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    sx={{
-                                        backgroundColor: 'black',
-                                        color: 'white',
-                                        flex: 1,
-                                        width: isSmallScreen ? '100%' : 'auto',
-                                        '&:hover': {
-                                            backgroundColor: 'darkgray',
-                                        },
-                                        textTransform: 'none',
-                                        marginBottom: isSmallScreen ? 1 : 0,
-                                    }}
-                                    onClick={() => handleDelete(group.id)}
-                                >
-                                    Eliminar
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    sx={{
-                                        backgroundColor: 'black',
-                                        color: 'white',
-                                        flex: 1,
-                                        width: isSmallScreen ? '100%' : 'auto',
-                                        '&:hover': {
-                                            backgroundColor: 'darkgray',
-                                        },
-                                        textTransform: 'none',
-                                    }}
-                                    onClick={() => navigate(`groups/${group.id}/tasks`)}
-                                >
-                                    Crear Tareas
-                                </Button>
-                            </CardActions>
-                        </Card>
+                        <GroupCard
+                            group={group}
+                            onEdit={handleEdit}
+                            onDelete={handleDelete}
+                        />
                     </Grid>
                 ))}
             </Grid>
@@ -244,8 +171,12 @@ const Inicio = () => {
                         inputProps={{ maxLength: 3 }}
                     />
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                        <Button onClick={handleEditCancel} sx={{ mr: 2 }}>Cancelar</Button>
-                        <Button variant="contained" onClick={handleEditSave}>Guardar</Button>
+                        <Button onClick={handleEditCancel} sx={{ mr: 2 }}>
+                            Cancelar
+                        </Button>
+                        <Button onClick={handleEditSave} variant="contained">
+                            Guardar
+                        </Button>
                     </Box>
                 </Box>
             </Modal>
@@ -269,14 +200,18 @@ const Inicio = () => {
                     p: 4,
                 }}>
                     <Typography variant="h6" id="delete-modal-title">
-                        Confirmar Eliminación
+                        Eliminar Grupo
                     </Typography>
-                    <Typography id="delete-modal-description" sx={{ mb: 2 }}>
-                        ¿Estás seguro de que deseas eliminar este grupo? Esta acción no se puede deshacer.
+                    <Typography variant="body1" id="delete-modal-description">
+                        ¿Estás seguro de que quieres eliminar este grupo? Esta acción es irreversible.
                     </Typography>
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <Button onClick={() => setOpenDeleteModal(false)} sx={{ mr: 2 }}>Cancelar</Button>
-                        <Button variant="contained" color="error" onClick={deleteGroup}>Eliminar</Button>
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                        <Button onClick={() => setOpenDeleteModal(false)} sx={{ mr: 2 }}>
+                            Cancelar
+                        </Button>
+                        <Button onClick={deleteGroup} variant="contained" color="error">
+                            Eliminar
+                        </Button>
                     </Box>
                 </Box>
             </Modal>
