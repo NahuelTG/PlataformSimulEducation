@@ -48,8 +48,8 @@ function AdminRoutes() {
             <Route path="/inicio" element={<Inicio />} />
             <Route path="/recursos-curso" element={<CourseList />} />
             <Route path="/edit-course/:courseId" element={<EditCourse />} />
-            <Route path="/inicio/groups/:groupId/tasks" element={<GroupTasksBoard />} />
-            <Route path="/recursos-curso/groups/:groupId/tasks/:taskId" element={<TaskDetails />} />
+            <Route path="/groups/:groupId/tasks" element={<GroupTasksBoard />} />
+            <Route path="/groups/:groupId/tasks/:taskId" element={<TaskDetails />} />
          </Routes>
       </div>
    );
