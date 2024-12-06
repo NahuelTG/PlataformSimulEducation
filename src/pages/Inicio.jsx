@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Typography, Modal, TextField, Box, Button, useMediaQuery, useTheme } from '@mui/material';
+import { Typography, Modal, TextField, Box, Button, useMediaQuery, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { firestore, storage } from '../connection/firebaseConfig';
 import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
@@ -53,6 +53,7 @@ const Inicio = () => {
                 // Muestra el alert antes de la eliminación de los archivos.
                 alert('Grupo eliminado exitosamente');
                 setOpenDeleteModal(false);
+                window.location.reload();
 
                 const groupStorageRef = ref(storage, `groups/${groupToDelete}`);
                 await deleteFolderContents(groupStorageRef);
@@ -113,17 +114,24 @@ const Inicio = () => {
             <Typography variant="h4" gutterBottom align="left" sx={{ marginLeft: isSmallScreen ? 2 : 0 }}>
                 Grupos Administrados
             </Typography>
-            <Grid container spacing={3} sx={{ flexDirection: isSmallScreen ? 'column' : 'row' }}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: isSmallScreen ? 'column' : 'row',
+                    flexWrap: 'wrap',
+                    gap: 3, // Espacio entre las tarjetas
+                }}
+            >
                 {groups.map((group) => (
-                    <Grid item xs={12} sm={6} md={4} key={group.id} sx={{ marginBottom: isSmallScreen ? 2 : 0 }}>
+                    <Box key={group.id} sx={{ width: isSmallScreen ? '100%' : 'calc(33.33% - 16px)' }}>
                         <GroupCard
                             group={group}
                             onEdit={handleEdit}
                             onDelete={handleDelete}
                         />
-                    </Grid>
+                    </Box>
                 ))}
-            </Grid>
+            </Box>
 
             {/* Modal para editar */}
             <Modal
