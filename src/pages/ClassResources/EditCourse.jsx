@@ -204,7 +204,7 @@ const EditCourse = () => {
       await updateDoc(docRef, {
         courseName: course.courseName,
         courseDescription: course.courseDescription,
-        englishLevel: course.englishLevel,
+        englishLevel: course.englishLevel || 'Nivel no especificado',  // Default value
       });
 
       // Array para almacenar los nombres de las subcolecciones activas
