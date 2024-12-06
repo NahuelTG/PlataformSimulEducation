@@ -76,7 +76,7 @@ const ViewCourse = () => {
     };
 
     const fetchThemes = async () => {
-      const simulr = "PmsGWJ2NCt9yb8OenzBu";
+      const simulr = "4kmxcQOcfXr7PECeiNnf";
       const updatedThemes = [];
       for (let i = 0; i < 5; i++) {
         const themeRef = collection(firestore, `clases/${simulr}/tema${i + 1}`);
@@ -85,6 +85,7 @@ const ViewCourse = () => {
 
         for (const doc of themeSnapshot.docs) {
           const data = doc.data();
+          console.log(`Tema ${i + 1} - Recurso:`, data);  // Verifica qué datos estás obteniendo
           themeData.push({ id: doc.id, ...data });
         }
 
