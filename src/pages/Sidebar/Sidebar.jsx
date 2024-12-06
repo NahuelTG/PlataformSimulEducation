@@ -282,7 +282,7 @@ const Sidebar = () => {
       <h2>Panel de Administrador</h2>
       <ul>
         <li>
-          <Link to="/">Inicio</Link>
+          <Link to="/Admin/inicio">Inicio</Link>
         </li>
         <li>
           <Link to="/Admin/crear-curso">Crear Grupo</Link>
