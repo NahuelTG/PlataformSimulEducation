@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Box, Button, Modal, TextField, Typography } from '@mui/material';
+import { Grid, Card, CardContent, CardActions, Typography, Button, Modal, TextField, Box, IconButton } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import { useNavigate } from 'react-router-dom';
 import { firestore, storage } from '../connection/firebaseConfig';
 import { collection, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { ref, listAll, deleteObject } from "firebase/storage";
@@ -18,14 +18,13 @@ const Inicio = () => {
   const [groupToDelete, setGroupToDelete] = useState(null);
   const navigate = useNavigate();
 
-  // Obtener grupos de Firestore cuando el componente esté montado
+  // Obtener grupos de Firestore
   React.useEffect(() => {
     const fetchGroups = async () => {
       const querySnapshot = await getDocs(collection(firestore, "groups"));
       const groupsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setGroups(groupsData);
     };
-
     fetchGroups();
   }, []);
 
@@ -102,40 +101,46 @@ const Inicio = () => {
       <Typography variant="h4" gutterBottom>
         Grupos
       </Typography>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Nombre del Grupo</TableCell>
-              <TableCell>Descripción</TableCell>
-              <TableCell>Imagen</TableCell>
-              <TableCell>Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {groups.map((group) => (
-              <TableRow key={group.id}>
-                <TableCell>{group.groupName}</TableCell>
-                <TableCell>{group.groupDescription.length > 10 ? group.groupDescription.substring(0, 10) + '...' : group.groupDescription}</TableCell>
-                <TableCell>
-                  {group.imageUrl && <img src={group.imageUrl} alt={group.groupName} width="100" style={{ borderRadius: '10px' }} />}
-                </TableCell>
-                <TableCell>
-                  <IconButton color="primary" onClick={() => handleEdit(group)}>
-                    <Edit />
-                  </IconButton>
-                  <IconButton color="secondary" onClick={() => handleDelete(group.id)}>
-                    <Delete />
-                  </IconButton>
-                  <IconButton color="default" onClick={() => navigate(`groups/${group.id}/tasks`)}>
-                    <AssignmentIndIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Grid container spacing={3}>
+        {groups.map((group) => (
+          <Grid item xs={12} sm={6} md={4} key={group.id}>
+            <Card>
+              <CardContent>
+                {group.imageUrl && (
+                  <Box
+                    component="img"
+                    src={group.imageUrl}
+                    alt={group.groupName}
+                    sx={{
+                      width: '100%',
+                      height: 150,
+                      objectFit: 'cover',
+                      borderRadius: '4px',
+                    }}
+                  />
+                )}
+                <Typography variant="h6" gutterBottom>
+                  {group.groupName}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {group.groupDescription.length > 60 ? group.groupDescription.substring(0, 60) + '...' : group.groupDescription}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <IconButton color="primary" onClick={() => handleEdit(group)}>
+                  <Edit />
+                </IconButton>
+                <IconButton color="secondary" onClick={() => handleDelete(group.id)}>
+                  <Delete />
+                </IconButton>
+                <IconButton color="default" onClick={() => navigate(`groups/${group.id}/tasks`)}>
+                  <AssignmentIndIcon />
+                </IconButton>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
 
       {/* Modal para editar */}
       <Modal
