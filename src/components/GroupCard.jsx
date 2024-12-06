@@ -101,9 +101,9 @@ const GroupCard = ({ group, onEdit, onDelete }) => {
                         },
                         textTransform: 'none',
                     }}
-                    onClick={() => navigate(`/Admin/inicio/groups/${group.id}/tasks`)}
+                    onClick={() => navigate(`/Admin/groups/${group.id}/tasks`)}
                 >
-                    Crear Tareas
+                    Ver Tareas
                 </Button>
             </CardActions>
         </Card>
