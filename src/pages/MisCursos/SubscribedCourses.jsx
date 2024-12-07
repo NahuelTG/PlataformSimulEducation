@@ -5,11 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardMedia, CardContent, Typography, Grid, Box, CircularProgress } from "@mui/material";
 import { styled } from "@mui/system";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { FaRegFrown } from "react-icons/fa"; // Icono para mensaje de no cursos suscrito
 import { SearchContext } from "../../context/SearchContext";
 import { UserContext } from "../../context/UserContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import styles from "./SubscribedCourses.module.css";
 
 const theme = createTheme({
    palette: {
@@ -49,11 +47,12 @@ const SubscribedCourses = () => {
    const [userGroups, setUserGroups] = useState([]);
    const [loading, setLoading] = useState(true);
    const { currentUser } = useContext(UserContext);
+   const { searchTerm, setSearchTerm } = useContext(SearchContext);
    const navigate = useNavigate();
 
    useEffect(() => {
       const fetchUserGroups = async () => {
-         setLoading(true); // Comienza el estado de carga
+         setLoading(true);
 
          if (currentUser && currentUser !== "invitado") {
             const userRef = doc(firestore, "users", currentUser.uid);
@@ -61,21 +60,19 @@ const SubscribedCourses = () => {
             if (userDoc.exists()) {
                const userData = userDoc.data();
                if (userData.courses) {
-                  // Obtener los detalles de los grupos desde la colección 'groups'
                   const groupsDetails = await Promise.all(
                      userData.courses.map(async (course) => {
                         const groupDoc = await getDoc(doc(firestore, "groups", course.courseId));
                         return groupDoc.exists() ? { id: course.courseId, ...groupDoc.data() } : null;
                      })
                   );
-                  // Filtrar grupos que existen
                   const filteredGroups = groupsDetails.filter((group) => group !== null);
                   setUserGroups(filteredGroups);
                }
             }
          }
 
-         setLoading(false); // Finaliza el estado de carga
+         setLoading(false);
       };
 
       fetchUserGroups();
@@ -85,60 +82,52 @@ const SubscribedCourses = () => {
       navigate(`/User/viewcourse/${groupId}`);
    };
 
-   const { searchTerm, setSearchTerm } = useContext(SearchContext);
-
    const handleSearchInputChange = (event) => {
       setSearchTerm(event.target.value);
    };
 
-   const Search = () => {
-      return (
-         <>
-            <span>
-               <input type="text" placeholder="Busqueda" value={searchTerm} onChange={handleSearchInputChange} />
-            </span>
-            <FontAwesomeIcon icon={faSearch} />
-         </>
-      );
-   };
+   const filteredGroups =
+      searchTerm.trim() !== ""
+         ? userGroups.filter((group) => group.groupName.toLowerCase().includes(searchTerm.toLowerCase()))
+         : userGroups;
 
    return (
       <ThemeProvider theme={theme}>
          <Box mt={3} mx="auto" maxWidth={1200} px={3}>
+            {/* Barra de búsqueda */}
+            <Box mb={3} className={styles.searchContainer}>
+               <input
+                  className={styles.search__input}
+                  type="text"
+                  placeholder="Busqueda"
+                  value={searchTerm}
+                  onChange={handleSearchInputChange}
+               />
+            </Box>
+
             {loading ? (
                <Box py={2} mb={3} textAlign="center">
-                  <CircularProgress /> {/* Indicador de carga */}
+                  <CircularProgress />
                </Box>
-            ) : userGroups.length > 0 ? (
-               <React.Fragment>
-                  <Box py={2} mb={3} bgcolor="#f0f0f0" borderRadius={5} textAlign="center">
-                     <Typography variant="h4" gutterBottom style={{ color: "#1f2029", fontWeight: "bold", marginTop: "7px" }}>
-                        Grupos en los que te has inscrito
-                     </Typography>
-                  </Box>
-                  <Search />
-                  <Grid container spacing={3}>
-                     {userGroups.map((group) => (
-                        <Grid item xs={12} sm={6} md={4} key={group.id}>
-                           <StyledCard onClick={() => handleCardClick(group.id)}>
-                              <StyledCardMedia image={group.imageUrl || "default-image-url"} title={group.groupName} />
-                              <CardContent>
-                                 <Typography gutterBottom variant="h5" component="div">
-                                    {group.groupName}
-                                 </Typography>
-                              </CardContent>
-                              <GroupBadge style={{ backgroundColor: "#1e293b" }}>{group.groupCode}</GroupBadge>
-                           </StyledCard>
-                        </Grid>
-                     ))}
-                  </Grid>
-               </React.Fragment>
+            ) : filteredGroups.length > 0 ? (
+               <Grid container spacing={3} className={styles.resultsContainer}>
+                  {filteredGroups.map((group) => (
+                     <Grid item xs={12} sm={6} md={4} key={group.id}>
+                        <StyledCard onClick={() => handleCardClick(group.id)}>
+                           <StyledCardMedia image={group.imageUrl || "default-image-url"} title={group.groupName} />
+                           <CardContent>
+                              <Typography gutterBottom variant="h5" component="div">
+                                 {group.groupName}
+                              </Typography>
+                           </CardContent>
+                           <GroupBadge>{group.groupCode}</GroupBadge>
+                        </StyledCard>
+                     </Grid>
+                  ))}
+               </Grid>
             ) : (
-               <Box py={2} mb={3} textAlign="center">
-                  <Typography variant="h4" gutterBottom style={{ color: "#1f2029", fontWeight: "bold", marginTop: "7px" }}>
-                     No estás suscrito a ningún grupo
-                  </Typography>
-                  <FaRegFrown style={{ fontSize: "3rem", color: "#1976d2", marginTop: "1rem" }} />
+               <Box py={2} textAlign="center" className={styles.noResults}>
+                  <Typography variant="h5">No hay resultados para "{searchTerm}"</Typography>
                </Box>
             )}
          </Box>
