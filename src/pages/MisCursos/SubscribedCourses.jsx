@@ -8,6 +8,8 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { SearchContext } from "../../context/SearchContext";
 import { UserContext } from "../../context/UserContext";
 import styles from "./SubscribedCourses.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const theme = createTheme({
    palette: {
@@ -93,45 +95,57 @@ const SubscribedCourses = () => {
 
    return (
       <ThemeProvider theme={theme}>
-         <Box mt={3} mx="auto" maxWidth={1200} px={3}>
-            {/* Barra de búsqueda */}
-            <Box mb={3} className={styles.searchContainer}>
-               <input
-                  className={styles.search__input}
-                  type="text"
-                  placeholder="Busqueda"
-                  value={searchTerm}
-                  onChange={handleSearchInputChange}
-               />
-            </Box>
+   <Box mt={3} mx="auto" maxWidth={1200} px={3}>
+      {/* Barra de búsqueda */}
+      <Box mb={3} className={styles.searchContainer}>
+         <div style={{ position: "relative", maxWidth: "600px", width: "100%" }}>
+            {/* Ícono de lupa */}
+            <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
+            {/* Campo de búsqueda */}
+            <input
+               className={styles.search__input}
+               type="text"
+               placeholder=""
+               value={searchTerm}
+               onChange={handleSearchInputChange}
+            />
+         </div>
+      </Box>
 
-            {loading ? (
-               <Box py={2} mb={3} textAlign="center">
-                  <CircularProgress />
-               </Box>
-            ) : filteredGroups.length > 0 ? (
-               <Grid container spacing={3} className={styles.resultsContainer}>
-                  {filteredGroups.map((group) => (
-                     <Grid item xs={12} sm={6} md={4} key={group.id}>
-                        <StyledCard onClick={() => handleCardClick(group.id)}>
-                           <StyledCardMedia image={group.imageUrl || "default-image-url"} title={group.groupName} />
-                           <CardContent>
-                              <Typography gutterBottom variant="h5" component="div">
-                                 {group.groupName}
-                              </Typography>
-                           </CardContent>
-                           <GroupBadge>{group.groupCode}</GroupBadge>
-                        </StyledCard>
-                     </Grid>
-                  ))}
-               </Grid>
-            ) : (
-               <Box py={2} textAlign="center" className={styles.noResults}>
-                  <Typography variant="h5">No hay resultados para "{searchTerm}"</Typography>
-               </Box>
-            )}
+      {/* Indicador de carga o resultados */}
+      {loading ? (
+         <Box py={2} mb={3} textAlign="center">
+            <CircularProgress />
          </Box>
-      </ThemeProvider>
+      ) : filteredGroups.length > 0 ? (
+         <Grid container spacing={3} className={styles.resultsContainer}>
+            {filteredGroups.map((group) => (
+               <Grid item xs={12} sm={6} md={4} key={group.id}>
+                  <StyledCard onClick={() => handleCardClick(group.id)}>
+                     <StyledCardMedia
+                        image={group.imageUrl || "default-image-url"}
+                        title={group.groupName}
+                     />
+                     <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                           {group.groupName}
+                        </Typography>
+                     </CardContent>
+                     <GroupBadge>{group.groupCode}</GroupBadge>
+                  </StyledCard>
+               </Grid>
+            ))}
+         </Grid>
+      ) : (
+         <Box py={2} textAlign="center" className={styles.noResults}>
+            <Typography variant="h5">
+               No hay resultados para "{searchTerm}"
+            </Typography>
+         </Box>
+      )}
+   </Box>
+</ThemeProvider>
+
    );
 };
 

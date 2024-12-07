@@ -2,28 +2,46 @@
 
 /* Contenedor de la barra de búsqueda */
 .searchContainer {
-   display: flex;
-   justify-content: center;
-   margin-bottom: 20px;
-}
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+ }
 
 /* Estilo del input de búsqueda */
 .search__input {
-   width: 100%;
-   max-width: 600px;
-   padding: 10px 15px;
-   font-size: 16px;
-   border: 1px solid #ccc;
-   border-radius: 5px;
-   transition: border-color 0.3s ease, box-shadow 0.3s ease;
-   outline: none;
+  width: 100%;
+  max-width: 600px;
+  padding: 10px 40px 10px 20px; /* Espaciado extra para el ícono */
+  font-size: 16px;
+  border: 2px solid black; /* Borde negro como en el diseño */
+  border-radius: 20px; /* Bordes redondeados */
+  background-color: white; /* Fondo blanco */
+  outline: none;
+  transition: all 0.3s ease;
+ }
+ .search__input::placeholder {
+  color: black; /* Color del placeholder (opcional) */
+}
+
+.search__input:hover {
+  border-color: #1976d2;
+   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .search__input:focus {
-   border-color: #1976d2;
-   box-shadow: 0 0 8px rgba(25, 118, 210, 0.3);
+  border-color: #1976d2;
+   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);;
 }
-
+.searchIcon {
+  position: absolute;
+  left: 10px; /* Posiciona el ícono dentro del campo */
+  top: 50%;
+  transform: translateY(-50%); /* Centra el ícono verticalmente */
+  font-size: 20px; /* Aumenta el tamaño del ícono */
+  color: black; /* Cambia el color de la lupa a negro */
+  font-weight: bold; /* Aumenta el grosor visual del ícono */
+}
 /* Contenedor de los resultados */
 .resultsContainer {
    display: flex;
