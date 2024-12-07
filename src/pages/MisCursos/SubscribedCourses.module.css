@@ -3,9 +3,10 @@
 /* Contenedor de la barra de búsqueda */
 .searchContainer {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end; /* Mueve el buscador a la derecha */
   align-items: center;
   margin-bottom: 20px;
+  margin-right: 10px; /* Ajusta este valor para moverlo más hacia la derecha */
  }
 
 /* Estilo del input de búsqueda */

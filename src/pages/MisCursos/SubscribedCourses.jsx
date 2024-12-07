@@ -95,7 +95,7 @@ const SubscribedCourses = () => {
 
    return (
       <ThemeProvider theme={theme}>
-   <Box mt={3} mx="auto" maxWidth={1200} px={3}>
+   <Box mt={3} mx="auto" maxWidth={1600} px={3}>
       {/* Barra de búsqueda */}
       <Box mb={3} className={styles.searchContainer}>
          <div style={{ position: "relative", maxWidth: "600px", width: "100%" }}>
