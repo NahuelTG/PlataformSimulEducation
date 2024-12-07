@@ -44,8 +44,8 @@ const Landing = () => {
     <div className="hero-06">
       <div className="nav-bar">
         <button className="logon">
-          <img className="image-1-icon" alt="" src="/image-1@2x.png" />
-          <div className="ovonrueden">SISMODE</div>
+          {/* <img className="image-1-icon" alt="" src="/image-1@2x.png" />
+          <div className="ovonrueden">SimultechAcademy</div> */}
         </button>
         <div className={`hamburger ${menuActive ? 'active' : ''}`} onClick={toggleMenu} style={{ marginRight: '20px' }}>
           <div></div>
@@ -79,9 +79,6 @@ const Landing = () => {
         <div className="heading-logo">
           <div className="heading-cta">
             <div className="heading-text">
-              <div className="find-the-most">
-                Sistema de Aprendizaje y Modelos de Desarrollo
-              </div>
               <div className="vestibulum-placerat">
               La plataforma de LMS y centro de contenido integral 
               para la simulación de sistemas, ofreciendo una experiencia 
@@ -93,19 +90,16 @@ const Landing = () => {
               <Link to="/Gest/Login" className="cta-02">Inicia Sesión</Link>
             </button>
           </div>
-          <div className="logo-cloud">
+          {/* <div className="logo-cloud">
             <div className="heading">DESARROLLADO PARA:</div>
             <div className="logos">
               <button className="image-2" onClick={onImage2Click} />
               <a className="image-3" onClick={onImage3Click} />
             </div>
-          </div>
+          </div> */}
         </div>
         {!isVisible && (
         <div className="design-parent">
-          <div className="design">
-            <img className="vector-icon" alt="" src="/vector.svg" />
-          </div>
           <img className="frame-icon" alt="" src="/frame.svg" />
         </div>
         )}

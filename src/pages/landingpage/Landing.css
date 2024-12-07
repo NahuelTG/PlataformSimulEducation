@@ -95,7 +95,7 @@
 .nav-bar {
   text-decoration: none;
   align-self: stretch;
-  background-color: #1e293b;
+  background-color: #181616;
   align-items: center;
   justify-content: space-between;
   padding-right: 5vw;
@@ -110,12 +110,20 @@
   font-weight: 800;
 }
 .vestibulum-placerat {
-  align-self: stretch;
-  position: relative;
-  font-size: 16px;
-  letter-spacing: -0.02em;
-  line-height: 150%;
-  color: #b8b8b9;
+  position: absolute;
+  width: 501px;
+  height: 140px;
+  left: 161px;
+  top: 689px;
+
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 28px;
+  text-align: center;
+
+  color: #000000;
 }
 .heading-text {
   align-self: stretch;
@@ -236,11 +244,6 @@
   margin-bottom: 8vh;
   margin-right: 5vh;
 }
-.vector-icon {
-  width: 285px;
-  position: relative;
-  height: 443px;
-}
 .design {
   width: 652px;
   flex: 1;
@@ -254,15 +257,11 @@
   align-self: start;
 }
 .frame-icon {
-  width: 585px;
-  position: relative;
-  height: 652px;
-  overflow: hidden;
-  flex-shrink: 0;
-  margin-left: -85vw;
-  padding-right: 1vw;
-  transform: scale(0.8);
-  margin-bottom: 70px;
+  position: absolute;
+  width: 587px;
+  height: 504px;
+  left: 114px;
+  top: 170px
 }
 .content,
 .design-parent {
@@ -277,16 +276,16 @@
 }
 .content {
   align-self: stretch;
-  background-color: #1e293b; /* Color oscuro para el fondo del contenido */
+  background-color: #F5F5F5; /* Color oscuro para el fondo del contenido */
   gap: 34px;
   font-size: 60px;
-  color: #d6dce4; /* Color más claro para el texto */
+  color: #F5F5F5; /* Color más claro para el texto */
   height: 830px;
 }
 
 .image {
   align-self: stretch;
-  background-color: #334155; /* Color oscuro para el fondo de la imagen */
+  background-color: #181616; /* Color oscuro para el fondo de la imagen */
   height: 10.7vh;
 }
 .hero-06 {
