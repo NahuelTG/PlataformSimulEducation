@@ -104,7 +104,7 @@ const Inicio = () => {
     return (
         <Box
             sx={{
-                marginLeft: isSmallScreen ? 0 : '250px',
+                marginLeft: isSmallScreen ? 0 : '300px',
                 padding: 3,
                 bgcolor: 'white',
                 height: '100vh',
