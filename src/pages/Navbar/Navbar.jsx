@@ -4,7 +4,6 @@ import styles from "./Navbar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faSearch, faUser, faGraduationCap, faFileCode, faVideo } from "@fortawesome/free-solid-svg-icons";
 import { FaComments, FaArrowLeft, FaPaperPlane } from "react-icons/fa";
-import logo from "../../assets/ELEVA.png";
 import { UserContext } from "../../context/UserContext";
 import { SearchContext } from "../../context/SearchContext";
 import { FiLogOut } from "react-icons/fi";
@@ -233,12 +232,12 @@ const Navbar = () => {
    const Foro = () => {
       return (
          <>
-            <a className={`${styles.bellicon} ${showMensajes ? styles.active : ""}`} onClick={toggleMensajes}>
+            <button className={`${styles.bellicon} ${showMensajes ? styles.active : ""}`} onClick={toggleMensajes}>
                <div className={styles.foroFlex}>
                   <img className={styles.iconForo} src={IconForo} alt="" />
                   <p>Foro</p>
                </div>
-            </a>
+            </button>
             {showMensajes && (
                <div className={styles.mensajesmenu}>
                   {selectedContact ? (
@@ -333,10 +332,6 @@ const Navbar = () => {
 
    return (
       <nav className={styles.nav}>
-         <button className={`${styles.userInfo} ${menuOpen ? styles.userInfoActive : ""}`} onClick={toggleMenu} ref={dropdownRef}>
-            <FontAwesomeIcon icon={faUser} className={styles.userIcon} />
-            <span className={styles.userName}>{currentUser.username}</span>
-         </button>
          <NavLink to="/">
             <img src={Logo} className={styles.logo} alt="" />
             <img src={TextLogo} className={styles.textLogo} alt="" />
@@ -403,6 +398,10 @@ const Navbar = () => {
                   <span className={styles.label}>Video llamada</span>
                </NavLink>
                <Foro />
+               <button className={`${menuOpen ? styles.userInfoActive : ""} ${styles.buttonPerfil}`} onClick={toggleMenu} ref={dropdownRef}>
+                  <img src={Perfil} alt="" />
+                  <span className={styles.userName}>{currentUser.username}</span>
+               </button>
                {/* <NavLink className={() => `${styles.active} ${styles.nav__item}`} to="/User/Search">
                   <span className={styles.label}>
                      <input
