@@ -1,14 +1,20 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './Sidebar.css'; 
+import './Sidebar.css';
 import { FiLogOut } from 'react-icons/fi';
 import { UserContext } from '../../context/UserContext';
 import { FaBars, FaTimes, FaComments, FaArrowLeft, FaPaperPlane } from 'react-icons/fa';
 import { collection, query, where, getDocs, addDoc, orderBy, onSnapshot } from "firebase/firestore";
 import { firestore } from '../../connection/firebaseConfig';
+import Logo from "../../assets/Logo.png";
+import TextLogo from "../../assets/TextLogo.png";
+import Home from "../../assets/Home.png";
+import AddClass from "../../assets/AddClass.png";
+import SupportClass from "../../assets/SupportClass.png";
+import IconForo from "../../assets/Foro.png";
 
 const Sidebar = () => {
-  const {setCurrentUser, setRoleC, currentUser} = useContext(UserContext);
+  const { setCurrentUser, setRoleC, currentUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
@@ -24,11 +30,11 @@ const Sidebar = () => {
   const bottomRef = useRef(null);
 
   const handleLogout = () => {
-        localStorage.removeItem('userData');
-        localStorage.removeItem('userDataEncriptado');
-        setCurrentUser(null);
-        setRoleC(null);
-        navigate("/");
+    localStorage.removeItem('userData');
+    localStorage.removeItem('userDataEncriptado');
+    setCurrentUser(null);
+    setRoleC(null);
+    navigate("/");
   };
   useEffect(() => {
     const handleResize = () => {
@@ -42,7 +48,7 @@ const Sidebar = () => {
     window.addEventListener('resize', handleResize);
     handleResize();
     return () => window.removeEventListener('resize', handleResize);
-  }, []);  
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -52,7 +58,8 @@ const Sidebar = () => {
     };
     document.body.addEventListener('click', handleClickOutside);
     return () => {
-      document.body.removeEventListener('click', handleClickOutside);};
+      document.body.removeEventListener('click', handleClickOutside);
+    };
   }, []);
 
   const handleClose = () => {
@@ -101,7 +108,7 @@ const Sidebar = () => {
         });
       }
     });
-  
+
     receivedSnapshot.forEach((doc) => {
       const contact = doc.data();
       if (!contactsMap.has(contact.senderEmail)) {
@@ -122,11 +129,11 @@ const Sidebar = () => {
         }
       }
     });
-  
+
     const contacts = Array.from(contactsMap.values()).sort((a, b) => b.lastMessageDate - a.lastMessageDate);
-  
+
     setConversationContacts(contacts);
-  };    
+  };
 
   const fetchMessages = async (contactEmail) => {
     const q = query(
@@ -135,7 +142,7 @@ const Sidebar = () => {
       where("receiverEmail", "in", [currentUser.email, contactEmail]),
       orderBy("timestamp", "asc")
     );
-  
+
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const messages = [];
       querySnapshot.forEach((doc) => {
@@ -202,104 +209,119 @@ const Sidebar = () => {
 
   return (
     <div>
-    <div className='mensajescontainerad' ref={mensajesRef}>
-      <button className={`bellicoso ${showMensajes ? 'active' : ''}`} onClick={toggleMensajes}>
-        <FaComments />
-      </button>
-      {showMensajes && (
-        <div className='mensajesmenu'>
-          {selectedContact ? (
-            <div>
-              <div className='chatheader'>
-                <button className='backbutton' onClick={handleBackClick}>
-                  <FaArrowLeft />
-                </button>
-                <h3>{selectedContact.username}</h3>
-              </div>
-              <div className='chatcontainer'>
-                <div className='messageslist' ref={messagesListRef}>
-                  {messages.map((mensaje) => (
-                    <div key={mensaje.id} className={`message ${mensaje.senderEmail === currentUser.email ? 'sent' : 'received'}`}>
-                      <p>{mensaje.contenido}</p>
-                    </div>
-                  ))}
-                  <div ref={bottomRef} />
-                </div>
-                <form className='messageform' onSubmit={handleMensajeSubmit}>
-                  <input
-                    type='text'
-                    className='messageinput'
-                    placeholder='Escribe un mensaje'
-                    value={mensajeInput}
-                    onChange={(e) => setMensajeInput(e.target.value)}
-                  />
-                  <button type='submit' className='messagesubmit'>
-                    <FaPaperPlane />
+      <div className='mensajescontainerad' ref={mensajesRef}>
+        <button className={`bellicoso ${showMensajes ? 'active' : ''}`} onClick={toggleMensajes}>
+          <img src={IconForo} alt="Foro" style={{ width: '35px', height: '35px', marginRight: '15px' }} />
+          Foro
+        </button>
+        {showMensajes && (
+          <div className='mensajesmenu'>
+            {selectedContact ? (
+              <div>
+                <div className='chatheader'>
+                  <button className='backbutton' onClick={handleBackClick}>
+                    <FaArrowLeft />
                   </button>
-                </form>
+                  <h3>{selectedContact.username}</h3>
+                </div>
+                <div className='chatcontainer'>
+                  <div className='messageslist' ref={messagesListRef}>
+                    {messages.map((mensaje) => (
+                      <div key={mensaje.id} className={`message ${mensaje.senderEmail === currentUser.email ? 'sent' : 'received'}`}>
+                        <p>{mensaje.contenido}</p>
+                      </div>
+                    ))}
+                    <div ref={bottomRef} />
+                  </div>
+                  <form className='messageform' onSubmit={handleMensajeSubmit}>
+                    <input
+                      type='text'
+                      className='messageinput'
+                      placeholder='Escribe un mensaje'
+                      value={mensajeInput}
+                      onChange={(e) => setMensajeInput(e.target.value)}
+                    />
+                    <button type='submit' className='messagesubmit'>
+                      <FaPaperPlane />
+                    </button>
+                  </form>
+                </div>
               </div>
-            </div>
-          ) : (
-            <div>
-              <div className='mensajestabs'>
-                <button onClick={() => setActiveTab('mensajes')} className={activeTab === 'mensajes' ? 'mensajeactive' : ''}>Mensajes</button>
-                <button onClick={() => setActiveTab('usuarios')} className={activeTab === 'usuarios' ? 'mensajeactive' : ''}>Usuarios</button>
-                <button onClick={() => setActiveTab('admin')} className={activeTab === 'admin' ? 'mensajeactive' : ''}>Admin</button>
-              </div>
-              <div className='mensajescontent'>
-                <div className='mensajessection' style={{ display: activeTab === 'mensajes' ? 'block' : 'none' }}>
-                  <h2>Mensajes</h2>
-                  {conversationContacts.length === 0 ? (
-                    <p>No hay conversaciones abiertas.</p>
-                  ) : (
-                    conversationContacts.map((contact) => (
+            ) : (
+              <div>
+                <div className='mensajestabs'>
+                  <button onClick={() => setActiveTab('mensajes')} className={activeTab === 'mensajes' ? 'mensajeactive' : ''}>Mensajes</button>
+                  <button onClick={() => setActiveTab('usuarios')} className={activeTab === 'usuarios' ? 'mensajeactive' : ''}>Usuarios</button>
+                  <button onClick={() => setActiveTab('admin')} className={activeTab === 'admin' ? 'mensajeactive' : ''}>Admin</button>
+                </div>
+                <div className='mensajescontent'>
+                  <div className='mensajessection' style={{ display: activeTab === 'mensajes' ? 'block' : 'none' }}>
+                    <h2>Mensajes</h2>
+                    {conversationContacts.length === 0 ? (
+                      <p>No hay conversaciones abiertas.</p>
+                    ) : (
+                      conversationContacts.map((contact) => (
+                        <div key={contact.email} className='contactitem' onClick={() => handleContactClick(contact)}>
+                          <p>{contact.username}</p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  <div className='contactssection' style={{ display: activeTab === 'usuarios' || activeTab === 'admin' ? 'block' : 'none' }}>
+                    <h2>{activeTab === 'usuarios' ? 'Usuarios' : 'Admin'}</h2>
+                    {contacts.filter((contact) => contact.role === (activeTab === 'usuarios' ? 'usuario' : 'admin')).map((contact) => (
                       <div key={contact.email} className='contactitem' onClick={() => handleContactClick(contact)}>
                         <p>{contact.username}</p>
                       </div>
-                    ))
-                  )}
+                    ))}
+                  </div>
                 </div>
-                <div className='contactssection' style={{ display: activeTab === 'usuarios' || activeTab === 'admin' ? 'block' : 'none' }}>
-                  <h2>{activeTab === 'usuarios' ? 'Usuarios' : 'Admin'}</h2>
-                  {contacts.filter((contact) => contact.role === (activeTab === 'usuarios' ? 'usuario' : 'admin')).map((contact) => (
-                    <div key={contact.email} className='contactitem' onClick={() => handleContactClick(contact)}>
-                      <p>{contact.username}</p>
-                    </div>
-                  ))}
-               </div>
-             </div>
-           </div>
-          )}
-        </div>
-      )}
-    </div>
-    {isSidebarOpen ? (
-    <div className="admin-sidebar">
-      {isVisible &&(
-        <button  className= 'botond' onClick={handleClose}><FaTimes/></button>
-      )}
-      <img src="/image-1@2x.png" className='header-container ' width="80" height="80"/>
-      <h2>Panel de Administrador</h2>
-      <ul>
-        <li>
-          <Link to="/Admin/inicio">Inicio</Link>
-        </li>
-        <li>
-          <Link to="/Admin/crear-curso">Crear Grupo</Link>
-        </li>
-        <li>
-          <Link to="/Admin/recursos-curso">Recursos de un Curso</Link>
-        </li>
-      </ul>
-      <div className="logout-button">
-        <button onClick={handleLogout}>
-          <FiLogOut />
-          <span>Cerrar Sesión</span>
-        </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
-    </div>
-    ) : (
-        <button className = 'botonf' onClick={handleOpen}><FaBars/></button>
+      {isSidebarOpen ? (
+        <div className="admin-sidebar">
+          {isVisible && (
+            <button className='botond' onClick={handleClose}><FaTimes /></button>
+          )}
+          <div className="header-container">
+            <div className="logo-container">
+              <img src={TextLogo} className="logo" width="80" height="80" />
+              <img src={Logo} className="img-logo" width="80" height="80" />
+            </div>
+          </div>
+          <ul>
+            <li>
+              <Link to="/Admin/inicio" style={{ display: 'flex', alignItems: 'center' }}>
+                <img src={Home} alt="Inicio" style={{ width: '38px', height: '38px', marginRight: '25px' }} />
+                Inicio
+              </Link>
+            </li>
+            <li>
+              <Link to="/Admin/crear-curso" style={{ display: 'flex', alignItems: 'center' }}>
+                <img src={AddClass} alt="Crear Curso" style={{ width: '38px', height: '38px', marginRight: '25px' }} />
+                Crear Clase
+              </Link>
+            </li>
+            <li>
+              <Link to="/Admin/recursos-curso" style={{ display: 'flex', alignItems: 'center' }}>
+                <img src={SupportClass} alt="Soporte de Curso" style={{ width: '38px', height: '38px', marginRight: '25px' }} />
+                Material de apoyo
+              </Link>
+            </li>
+
+          </ul>
+          <div className="logout-button">
+            <button onClick={handleLogout}>
+            <FiLogOut size={30} />
+              <span>Cerrar Sesión</span>
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button className='botonf' onClick={handleOpen}><FaBars /></button>
       )}
     </div>
   );
