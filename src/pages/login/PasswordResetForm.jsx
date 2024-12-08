@@ -62,9 +62,6 @@ const PasswordResetForm = () => {
   return (
   <div className="ventanaEspecifica">
     <div className="password-reset-container">
-      <Link to="/" className="logo"> 
-        <img src={logo} alt="" /> 
-      </Link>
       <div className="password-reset-box">
         <h6 className="mb-0 pb-3 text-center" style={{ fontSize: '15px', margin: 25 }}>Introduce el correo Registrado</h6>
         <div className="form-group">
@@ -85,7 +82,7 @@ const PasswordResetForm = () => {
             {isRegistering ? <CircularProgress size={24} color="inherit" /> : 'Enviar'}
           </button>
         </div>
-        <p className="mb-0 mt-4 text-center"><Link to ="/Gest/Login" className="link">Atrás</Link></p>
+        <p className="mb-0 mt-4 text-center"><Link to ="/" className="link">Atrás</Link></p>
       </div>
       {isModalOpen && (
         <div className="password-reset-modal-overlay">

@@ -13,7 +13,8 @@
 }
 
 .link {
-  color: #cbd5e1; /* Color de enlace */
+  color: #181616; 
+  margin-left: 52px;
 }
 .link:hover {
   color: #a0aec0; /* Color de enlace al pasar el mouse */
@@ -41,6 +42,9 @@ h6 span {
 }
 .texto {
   margin-bottom: 35px;
+  margin-top: -8px;
+  margin-left: 62px;
+  color: black;
 }
 .full-height {
   min-height: 80vh;
@@ -71,7 +75,7 @@ h6 span {
   height: 36px;
   border-radius: 50%;
   color: #a0aec0; /* Color del ícono del checkbox */
-  background-color: #334155; /* Fondo del ícono del checkbox */
+  background-color: #F5F5F5; /* Fondo del ícono del checkbox */
   font-family: 'unicons';
   content: '';
   top: -10px;
@@ -103,15 +107,16 @@ h6 span {
   transition: all 600ms ease-out; 
 }
 .card-front, .card-back {
+  right: -19px;
   width: 100%;
-  min-height: 100%;
-  background-color: #262e39; /* Fondo de las tarjetas */
-  background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+  min-height: 122%;
+  margin-top: -89px;
+  background-color: #F5F5F5; /* Fondo de las tarjetas */
   background-position: bottom center;
   background-repeat: no-repeat;
   background-size: 300%;
   position: absolute;
-  border-radius: 6px;
+  border-radius: 95px;
   -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
   -webkit-backface-visibility: hidden;
@@ -136,23 +141,25 @@ h6 span {
   display: block;
   margin: 0;
   padding: 0;
+  top: -25px;
 }
 .form-style {
   padding-top: 13px;
-  padding-bottom: 13px;
-  padding-left: 50px;
+  padding-bottom: 18px;
+  padding-left: 80px;
   padding-right: 50px;
+  margin-left: 16px;
   height: 48px;
   width: 65%;
   max-width: 70%;
   font-weight: 500;
-  border-radius: 4px;
+  border-radius: 39px;
   font-size: 14px;
   line-height: 22px;
   letter-spacing: 0.5px;
   outline: none;
   color: #cbd5e1; /* Color del texto del formulario */
-  background-color: #1e293b; /* Fondo del formulario */
+  background-color: #181616; /* Fondo del formulario */
   border: none;
   -webkit-transition: all 200ms linear;
   transition: all 200ms linear;
@@ -166,8 +173,8 @@ h6 span {
 }
 .input-icon {
   position: absolute;
-  top: 0;
-  left: 50px;
+  top: 32px;
+  left: 30px;
   height: 70px;
   font-size: 24px;
   line-height: 48px;
@@ -175,6 +182,8 @@ h6 span {
   color: #a0aec0; /* Color del ícono de entrada */
   -webkit-transition: all 200ms linear;
   transition: all 200ms linear;
+  background: url(email-icon-512x410-fwc6wtq1.png);
+
 }
 
 .form-group input:-ms-input-placeholder {
@@ -225,6 +234,7 @@ h6 span {
 .btn {  
   margin-top: 18px;
   border-radius: 4px;
+  margin-left: 165px;
   height: 44px;
   font-size: 13px;
   font-weight: 600;
@@ -247,8 +257,8 @@ h6 span {
   -ms-flex-pack: center;
   text-align: center;
   border: none;
-  background-color: #a0aec0; /* Fondo del botón */
-  color: #1e293b; /* Color del texto del botón */
+  background-color: #181616; /* Fondo del botón */
+  color: #FFFFFF; /* Color del texto del botón */
   box-shadow: 0 8px 24px 0 rgba(160, 174, 192, .2);
 }
 .btn:active,
@@ -279,6 +289,15 @@ h6 span {
 
 .option {
   font-size: 15px;
+  
+}
+#practice {
+  margin-top: 45px;
+  margin-left: 81px;
+}
+
+.nose {
+  top: -73px;
 }
 .option:hover {
   font-weight: bold;
@@ -317,7 +336,7 @@ h6 span {
   justify-content: center;
   align-items: center;
   min-height: 100vh; 
-  background-color: #1e293b; /* Fondo principal */
+  background-color: #181616; /* Fondo principal */
   color: #cbd5e1; /* Color del texto */
   font-family: 'Poppins', sans-serif;
   font-weight: 300;
@@ -329,15 +348,14 @@ h6 span {
   width: 100%; 
   padding: 20px;
   box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1); 
-  color: #f2f2f2a6;
-  background-color: #262e39; /* Fondo de la caja */
-  background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+  color: #181616;
+  background-color: #F5F5F5; /* Fondo de la caja */
   border-radius: 8px;
 }
 
 .toggle-password {
   position: absolute;
-  top: 50%;
+  top: 60%;
   height: 50px;
   font-size: 24px;
   line-height: 46px;
@@ -345,7 +363,7 @@ h6 span {
   color: #a0aec0; /* Color del ícono de alternar contraseña */
   background: transparent;
   border: none;
-  right: 45px; 
+  right: 67px; 
   transform: translateY(-50%);
   cursor: pointer;
 }
@@ -411,4 +429,17 @@ h6 span {
 }
 .password-reset-modal-btn:hover {
   background-color: #031c66; 
+}
+
+#ingresar {
+  margin-left: 179px;
+}
+#task {
+  top: -82px;
+}
+
+#register {
+  margin-left: 64px;
+  margin-top: -69px;
+  color: black;
 }

@@ -110,18 +110,13 @@
   font-weight: 800;
 }
 .vestibulum-placerat {
-  position: absolute;
-  width: 501px;
-  height: 140px;
-  left: 161px;
-  top: 689px;
-
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 28px;
-  text-align: center;
+  
+  align-self: stretch;
+  position: relative;
+  font-size: 25px;
+  letter-spacing: -0.02em;
+  line-height: 150%;
+  margin-top: -129px;
 
   color: #000000;
 }
@@ -150,14 +145,14 @@
   background-color: #a0aec0;
   flex-direction: row;
   padding: 18px 32px;
-  color: #1e293b;
+  color: #181616;
   font-size: 15px; 
   text-decoration: none;
   font-weight: bold;
 }
 .cta-02:hover,
 .cta-button:hover {
-  background-color: #262e39;
+  background-color: #245293;
   color: #e6eaef;
 }
 .cta-02,
@@ -256,12 +251,20 @@
   position: undefined;
   align-self: start;
 }
-.frame-icon {
+/* .frame-icon {
   position: absolute;
   width: 587px;
   height: 504px;
   left: 114px;
   top: 170px
+} */
+.frame-icon {
+  position: absolute;
+  width: 50%; /* Ajusta al 50% del ancho del contenedor */
+  max-width: 587px; /* Máximo ancho para pantallas grandes */
+  height: auto; /* Mantiene las proporciones */
+  left: 6%; /* Ajusta a un 10% del contenedor desde la izquierda */
+  top: 20vh; /* Posiciona un 20% del alto de la ventana desde arriba */
 }
 .content,
 .design-parent {
@@ -270,6 +273,7 @@
   align-items: center;
   justify-content: flex-start;
 }
+
 .design-parent {
   width: 653px;
   height: 618px;
@@ -296,7 +300,7 @@
   justify-content: flex-start;
   text-align: left;
   font-size: 16px;
-  background-color: #1e293b;
+  background-color: #2f2e2e;
   color: #e2e7ed; /* Color más claro para el texto general */
   font-family: Inter;
   overflow: hidden;
@@ -390,5 +394,53 @@
   }
   .logo-cloud {
     margin-top: -40px;
+  }
+}
+
+
+
+/* .landing-container {
+  position: absolute;
+  width: 547px;
+  height: 654px;
+  left: 1085px;
+  top: 135px;
+
+  background: #181616;
+  border-radius: 10px;
+
+} */
+
+.landing-content {
+  display: flex;
+  flex-wrap: wrap; /* Permite que los elementos pasen a otra fila */
+  gap: 20px; /* Espaciado entre filas/columnas */
+  justify-content: center;
+  align-items: flex-start; /* Alinea elementos al inicio verticalmente */
+  padding: 20px;
+}
+
+.landing-container {
+  flex: 1;
+  min-width: 300px; /* Tamaño mínimo para responsividad */
+  max-width: 100%;
+  order: 2; /* Por defecto, el formulario estará abajo */
+  background: #181616;
+  border-radius: 100px;
+  padding: 39px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsividad: Cambiar el orden en pantallas pequeñas */
+@media (max-width: 768px) {
+  .landing-logos {
+    order: 2; /* Mueve los logos a la fila 2 */
+  }
+
+  .landing-container {
+    order: 1; /* Mueve el formulario a la fila 1 */
   }
 }
