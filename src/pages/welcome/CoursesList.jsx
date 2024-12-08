@@ -74,7 +74,7 @@ const CoursesList = () => {
               textAlign: 'left', // Alineado a la izquierda
   }}
 >
-  Grupos Disponibles
+  Grupos 
 </Typography>
           <Box className={styles.searchContainer}>
             <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
