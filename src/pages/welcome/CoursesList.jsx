@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardMedia, CardContent, Typography, Grid, Box } from '@mui/material';
 import { styled } from '@mui/system';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { Button } from '@mui/material';
 
 const theme = createTheme({
   palette: {
@@ -39,6 +40,12 @@ const GroupBadge = styled('div')(({ theme }) => ({
   padding: '0.5rem',
   borderRadius: '5px',
 }));
+const truncateText = (text, maxLength) => {
+  if (text.length > maxLength) {
+    return text.slice(0, maxLength) + '...';
+  }
+  return text;
+};
 
 const CoursesList = () => {
   const [groups, setGroups] = useState([]);
@@ -65,7 +72,7 @@ const CoursesList = () => {
   return (
     <ThemeProvider theme={theme}>
       <Box mt={3} mx="auto" maxWidth={1200} px={3}>
-        <Box py={2} mb={3} bgcolor="#f0f0f0" borderRadius={5} textAlign="center">
+        <Box py={2} mb={3} bgcolor="#D9D9D9" borderRadius={5} textAlign="center">
           <Typography variant="h4" gutterBottom style={{ color: '#1f2029', fontWeight: 'bold', marginTop: '7px' }}>
             Grupos Disponibles
           </Typography>
@@ -79,13 +86,21 @@ const CoursesList = () => {
                   title={group.groupName}
                 />
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
+                  <Typography gutterBottom variant="h5" component="div" style={{ fontWeight: 'bold' }}>
                     {group.groupName}
                   </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {truncateText(group.groupDescription || 'Sin descripción', 30)}
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    style={{ margin: '10px', backgroundColor: 'black', color: 'white' }}
+                    onClick={() => handleCardClick(group.id)}
+                    >
+                      Ver Grupo
+                    </Button>
                 </CardContent>
-                <GroupBadge style={{ backgroundColor: '#1e293b' }}>
-                  {group.groupCode}
-                </GroupBadge>
+                
               </StyledCard>
             </Grid>
           ))}
