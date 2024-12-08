@@ -155,16 +155,18 @@
 }
 
 .mensajesmenu {
-  position: absolute;
-  top: 60px;
-  right: -200px;
+  position: fixed; /* Cambiado de absolute a fixed para centrar en toda la pantalla */
+  top: 50%; /* Posición desde el top */
+  left: 50%; /* Posición desde el left */
+  transform: translate(-50%, -50%); /* Centrado absoluto */
   background-color: white;
   border: 1px solid #ddd;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.411);
-  width: 350px;
-  border-radius: 1rem;
-  max-height: 500px;
+  width: 1050px;
+  height: 500px; /* Ajusta según tus necesidades */
   overflow-y: auto;
+  border-radius: 1rem;
+  z-index: 1000; /* Asegúrate de que esté sobre otros elementos */
 }
 
 .mensajestabs {
