@@ -1,0 +1,107 @@
+/* Contenedor de la barra de búsqueda y el título */
+.headerContainer {
+    display: flex;
+    justify-content: space-between; /* Título a la izquierda y búsqueda a la derecha */
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  /* Estilo del título */
+  .sectionTitle {
+    font-size: 1.8rem; /* Tamaño más grande */
+    font-weight: 900; /* Grosor máximo */
+    color: #000; /* Negro absoluto */
+    margin: 0; /* Elimina márgenes adicionales */
+    text-align: left; /* Asegura que esté alineado a la izquierda */
+  }
+  
+  /* Contenedor de la barra de búsqueda */
+  .searchContainer {
+    position: relative;
+    max-width: 400px; /* Ajusta el ancho del buscador */
+    width: 100%; /* Se adapta al contenedor */
+  }
+  
+  /* Input del buscador */
+  .search__input {
+    width: 100%;
+    padding: 10px 10px 10px 40px; /* Espaciado para el ícono */
+    font-size: 16px;
+    border: 2px solid black; /* Borde negro */
+    border-radius: 20px; /* Bordes redondeados */
+    background-color: white; /* Fondo blanco */
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  
+  .search__input::placeholder {
+    color: black; /* Color del placeholder */
+  }
+  
+  .search__input:hover {
+    border-color: #1976d2;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra ligera */
+  }
+  
+  .search__input:focus {
+    border-color: #1976d2;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Ícono del buscador */
+  .searchIcon {
+    position: absolute;
+    left: 10px; /* Posiciona el ícono dentro del campo */
+    top: 50%;
+    transform: translateY(-50%); /* Centra el ícono verticalmente */
+    font-size: 20px; /* Tamaño del ícono */
+    color: black; /* Color del ícono */
+    font-weight: bold;
+  }
+  
+  /* Contenedor de los resultados */
+  .resultsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px; /* Espaciado entre los elementos */
+  }
+  
+  /* Estilo para cuando no hay resultados */
+  .noResults {
+    text-align: center;
+    color: #999;
+    margin-top: 30px;
+    font-size: 1.2rem;
+  }
+  
+  /* Tarjetas de los grupos */
+  .groupCard {
+    max-width: 345px;
+    margin: 1rem;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .groupCard:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Imagen dentro de las tarjetas */
+  .groupCardMedia {
+    height: 140px;
+  }
+  
+  /* Badge en las tarjetas */
+  .groupBadge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #1976d2; /* Color principal */
+    color: white;
+    padding: 0.5rem;
+    border-radius: 5px;
+  }
+  

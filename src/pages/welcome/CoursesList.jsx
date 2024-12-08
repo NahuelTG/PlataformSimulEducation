@@ -5,6 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardMedia, CardContent, Typography, Grid, Box } from '@mui/material';
 import { styled } from '@mui/system';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import styles from './CoursesList.module.css'; // CSS Modular
 
 const theme = createTheme({
   palette: {
@@ -25,30 +28,20 @@ const StyledCard = styled(Card)({
     boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
   },
 });
-
 const StyledCardMedia = styled(CardMedia)({
   height: 140,
 });
 
-const GroupBadge = styled('div')(({ theme }) => ({
-  position: 'absolute',
-  top: '10px',
-  right: '10px',
-  backgroundColor: theme.palette.primary.main,
-  color: 'white',
-  padding: '0.5rem',
-  borderRadius: '5px',
-}));
-
 const CoursesList = () => {
   const [groups, setGroups] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(''); // Término de búsqueda
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchGroups = async () => {
       const groupsCollection = collection(firestore, 'groups');
       const groupsSnapshot = await getDocs(groupsCollection);
-      const groupsList = groupsSnapshot.docs.map(doc => ({
+      const groupsList = groupsSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
@@ -62,33 +55,59 @@ const CoursesList = () => {
     navigate(`/User/course/${groupId}`);
   };
 
+  const filteredGroups = searchTerm
+    ? groups.filter((group) =>
+        group.groupName.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : groups;
+
   return (
     <ThemeProvider theme={theme}>
-      <Box mt={3} mx="auto" maxWidth={1200} px={3}>
-        <Box py={2} mb={3} bgcolor="#f0f0f0" borderRadius={5} textAlign="center">
-          <Typography variant="h4" gutterBottom style={{ color: '#1f2029', fontWeight: 'bold', marginTop: '7px' }}>
-            Grupos Disponibles
-          </Typography>
+      <Box mt={3} mx="auto" maxWidth={1600} px={3}>
+        <Box className={styles.headerContainer}>
+        <Typography
+          variant="h6"
+            sx={{
+              fontWeight: 900, 
+              fontSize: '1.8rem', 
+              color: '#000', 
+              textAlign: 'left', // Alineado a la izquierda
+  }}
+>
+  Grupos Disponibles
+</Typography>
+          <Box className={styles.searchContainer}>
+            <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
+            <input
+              className={styles.search__input}
+              type="text"
+              placeholder="Buscar..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </Box>
         </Box>
+
         <Grid container spacing={3}>
-          {groups.map((group) => (
-            <Grid item xs={12} sm={6} md={4} key={group.id}>
-              <StyledCard onClick={() => handleCardClick(group.id)}>
+          {filteredGroups.length > 0 ? (
+            filteredGroups.map((group) => (
+              <Grid item xs={12} sm={6} md={4} key={group.id}>
+                <StyledCard onClick={() => handleCardClick(group.id)}>
                 <StyledCardMedia
-                  image={group.imageUrl || 'default-image-url'}
+                  image={group.imageUrl || "default-image-url"}
                   title={group.groupName}
-                />
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    {group.groupName}
-                  </Typography>
-                </CardContent>
-                <GroupBadge style={{ backgroundColor: '#1e293b' }}>
-                  {group.groupCode}
-                </GroupBadge>
-              </StyledCard>
-            </Grid>
-          ))}
+                 />
+                  <CardContent>
+                    <Typography variant="h5">{group.groupName}</Typography>
+                  </CardContent>
+                </StyledCard>
+              </Grid>
+            ))
+          ) : (
+            <Typography variant="h6" style={{ textAlign: 'center', width: '100%' }}>
+              No se encontraron grupos
+            </Typography>
+          )}
         </Grid>
       </Box>
     </ThemeProvider>
