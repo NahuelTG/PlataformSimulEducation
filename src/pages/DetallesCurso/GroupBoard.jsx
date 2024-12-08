@@ -282,8 +282,8 @@ const GroupBoard = () => {
                ) : fileUrl ? (
                   <Box sx={{ height: "65vh" }}>
                      <Typography variant="body1">Archivo Subido:</Typography>
-                     <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-                        <Viewer fileUrl={fileUrl} plugins={[defaultLayoutPluginInstance]} />
+                     <Worker workerUrl={`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`}>
+                     <Viewer fileUrl={fileUrl} plugins={[defaultLayoutPluginInstance]} />
                      </Worker>
                      <div style={{ marginTop: "25px" }}></div>
                      {grade === "none" ? (
