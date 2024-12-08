@@ -11,6 +11,7 @@ import Sidebar from "./pages/Sidebar/Sidebar";
 import EnglishCourseForm from "./pages/ClassForm/EnglishCourseForm";
 import CourseList from "./pages/CourseList/CourseList";
 import EditCourse from "./pages/ClassResources/EditCourse";
+
 import CourseDetail from "./pages/DetallesCurso/CourseDetail";
 import SubscribedCourses from "./pages/MisCursos/SubscribedCourses";
 import ViewCourse from "./pages/DetallesCurso/ViewCourse";
