@@ -105,7 +105,14 @@ const theme = createTheme({
     className={styles.headerContainer}
   >
     {/* Título */}
-    <Typography variant="h5" className={styles.sectionTitle}>
+    <Typography variant="h5" 
+      sx={{
+        fontWeight: 900,
+        fontSize: '1.5 rem', 
+        color: '#000', 
+        textAlign: 'left',
+      }}
+      >
          Grupos en los que estás inscrito
     </Typography>
 
