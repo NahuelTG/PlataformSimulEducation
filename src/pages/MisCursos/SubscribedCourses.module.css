@@ -13,7 +13,7 @@
 .search__input {
   width: 100%;
   max-width: 600px;
-  padding: 10px 40px 10px 20px; /* Espaciado extra para el ícono */
+  padding: 10px 40px 10px 40px; /* Aumenta el padding a la izquierda */
   font-size: 16px;
   border: 2px solid black; /* Borde negro como en el diseño */
   border-radius: 20px; /* Bordes redondeados */
@@ -57,4 +57,11 @@
    color: #999;
    margin-top: 30px;
    font-size: 1.2rem;
+}
+.sectionTitle {
+  font-size: 1.4rem; /* Tamaño más pequeño */
+  font-weight: 900; /* Grosor máximo */
+  color: #000; /* Negro absoluto */
+  text-align: left;
+  margin: 0; /* Elimina márgenes adicionales */
 }
