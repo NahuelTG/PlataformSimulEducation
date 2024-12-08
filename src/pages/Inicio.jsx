@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Modal, TextField, Box, Button, useMediaQuery, useTheme } from '@mui/material';
+import { Typography, Modal, TextField, Box, Button, useMediaQuery, useTheme, Avatar, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { firestore, storage } from '../connection/firebaseConfig';
-import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { ref, listAll, deleteObject } from 'firebase/storage';
+import { collection, getDocs, doc, updateDoc, deleteDoc, setDoc } from 'firebase/firestore';
+import { ref, listAll, deleteObject, uploadBytes, getDownloadURL } from 'firebase/storage';
 import GroupCard from '../components/GroupCard';
 
 const Inicio = () => {
@@ -15,6 +15,12 @@ const Inicio = () => {
     const [editGroupCode, setEditGroupCode] = useState('');
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [groupToDelete, setGroupToDelete] = useState(null);
+    const [openCreateModal, setOpenCreateModal] = useState(false);
+    const [groupImage, setGroupImage] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
+    const [groupName, setGroupName] = useState('');
+    const [groupDescription, setGroupDescription] = useState('');
+    const [groupCode, setGroupCode] = useState('');
     const navigate = useNavigate();
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -46,11 +52,8 @@ const Inicio = () => {
     const deleteGroup = async () => {
         if (groupToDelete) {
             try {
-                // Elimina el documento de Firestore primero.
                 const groupDocRef = doc(firestore, 'groups', groupToDelete);
                 await deleteDoc(groupDocRef);
-
-                // Muestra el alert antes de la eliminación de los archivos.
                 alert('Grupo eliminado exitosamente');
                 setOpenDeleteModal(false);
                 window.location.reload();
@@ -97,29 +100,70 @@ const Inicio = () => {
         }
     };
 
-    const handleEditCancel = () => {
-        setOpenEditModal(false);
+    const handleCreateGroup = async (event) => {
+        event.preventDefault();
+        const newGroupRef = doc(collection(firestore, "groups"));
+        const groupId = newGroupRef.id;
+
+        try {
+            let imageUrl = '';
+
+            if (imageFile) {
+                const storageRef = ref(storage, `groups/${groupId}/images/${imageFile.name}`);
+                await uploadBytes(storageRef, imageFile);
+                imageUrl = await getDownloadURL(storageRef);
+            }
+            await setDoc(newGroupRef, {
+                groupName,
+                groupDescription,
+                groupCode,
+                imageUrl,
+            });
+
+            setGroupName('');
+            setGroupDescription('');
+            setGroupCode('');
+            setGroupImage(null);
+            setImageFile(null);
+            setOpenCreateModal(false);
+            alert('Grupo creado exitosamente');
+            window.location.reload();
+
+        } catch (error) {
+            console.error("Error creando el grupo: ", error);
+            alert('Hubo un error creando el grupo');
+        }
     };
 
     return (
         <Box
             sx={{
-                marginLeft: isSmallScreen ? 0 : '250px',
+                marginLeft: isSmallScreen ? 0 : '300px',
                 padding: 3,
                 bgcolor: 'white',
                 height: '100vh',
                 overflowY: 'auto',
             }}
         >
-            <Typography variant="h4" gutterBottom align="left" sx={{ marginLeft: isSmallScreen ? 2 : 0 }}>
-                Grupos Administrados
-            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="h4" gutterBottom align="left" sx={{ marginLeft: isSmallScreen ? 2 : 0 }}>
+                    Grupos Administrados
+                </Typography>
+                <Button
+                    variant="contained"
+                    color="inherit"
+                    onClick={() => setOpenCreateModal(true)}
+                >
+                    Crear Curso
+                </Button>
+            </Box>
+
             <Box
                 sx={{
                     display: 'flex',
                     flexDirection: isSmallScreen ? 'column' : 'row',
                     flexWrap: 'wrap',
-                    gap: 3, // Espacio entre las tarjetas
+                    gap: 3,
                 }}
             >
                 {groups.map((group) => (
@@ -133,10 +177,100 @@ const Inicio = () => {
                 ))}
             </Box>
 
+            <Modal
+                open={openCreateModal}
+                onClose={() => setOpenCreateModal(false)}
+                aria-labelledby="create-modal-title"
+                aria-describedby="create-modal-description"
+            >
+                <Box sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 400,
+                    bgcolor: 'background.paper',
+                    borderRadius: 2,
+                    boxShadow: 24,
+                    p: 4,
+                }}>
+                    <Typography variant="h6" id="create-modal-title">
+                        Crear Nuevo Grupo
+                    </Typography>
+                    <form onSubmit={handleCreateGroup}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    variant="outlined"
+                                    fullWidth
+                                    label="Nombre del Grupo"
+                                    name="groupName"
+                                    value={groupName}
+                                    onChange={e => setGroupName(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    variant="outlined"
+                                    fullWidth
+                                    label="Descripción del Grupo"
+                                    name="groupDescription"
+                                    multiline
+                                    rows={4}
+                                    value={groupDescription}
+                                    onChange={e => setGroupDescription(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    variant="outlined"
+                                    fullWidth
+                                    label="Código del Grupo"
+                                    name="groupCode"
+                                    inputProps={{ maxLength: 3 }}
+                                    value={groupCode}
+                                    onChange={e => setGroupCode(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <input
+                                    accept="image/*"
+                                    id="group-image-input"
+                                    type="file"
+                                    onChange={(event) => {
+                                        const file = event.target.files[0];
+                                        if (file) {
+                                            const reader = new FileReader();
+                                            reader.onloadend = () => setGroupImage(reader.result);
+                                            reader.readAsDataURL(file);
+                                            setImageFile(file);
+                                        }
+                                    }}
+                                    style={{ display: 'none' }}
+                                />
+                                <label htmlFor="group-image-input">
+                                    <Button variant="span" component="span">
+                                        Seleccionar Imagen
+                                    </Button>
+                                </label>
+                                {groupImage && (
+                                    <Avatar alt="Group Image" src={groupImage} sx={{ width: 150, height: 150, margin: 'auto', marginTop: '10px' }} />
+                                )}
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button variant="contained" color="success" fullWidth type="submit">
+                                    Crear Grupo
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </form>
+                </Box>
+            </Modal>
+
             {/* Modal para editar */}
             <Modal
                 open={openEditModal}
-                onClose={handleEditCancel}
+                onClose={() => setOpenEditModal(false)}
                 aria-labelledby="edit-modal-title"
                 aria-describedby="edit-modal-description"
             >
@@ -179,7 +313,7 @@ const Inicio = () => {
                         inputProps={{ maxLength: 3 }}
                     />
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                        <Button onClick={handleEditCancel} sx={{ mr: 2 }}>
+                        <Button onClick={() => setOpenEditModal(false)} sx={{ mr: 2 }}>
                             Cancelar
                         </Button>
                         <Button onClick={handleEditSave} variant="contained">
@@ -207,13 +341,10 @@ const Inicio = () => {
                     boxShadow: 24,
                     p: 4,
                 }}>
-                    <Typography variant="h6" id="delete-modal-title">
-                        Eliminar Grupo
+                    <Typography variant="h5" id="delete-modal-description">
+                        ¿Estás seguro de que quieres eliminar este grupo?
                     </Typography>
-                    <Typography variant="body1" id="delete-modal-description">
-                        ¿Estás seguro de que quieres eliminar este grupo? Esta acción es irreversible.
-                    </Typography>
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
                         <Button onClick={() => setOpenDeleteModal(false)} sx={{ mr: 2 }}>
                             Cancelar
                         </Button>

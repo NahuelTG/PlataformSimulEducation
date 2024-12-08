@@ -11,6 +11,10 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import SHA256 from 'crypto-js/sha256';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import HttpsIcon from '@mui/icons-material/Https';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const LoginForm = () => {
     const [username, setUsername] = useState('');
@@ -211,18 +215,15 @@ const LoginForm = () => {
     };
 
     return (
-    <div className='contenidolog'>
-        <Link to="/" className="logo"> 
-            <img src={logo} alt="" /> 
-        </Link>
+    
         <div className="sectione mb-4 pb-3">                
-            <h6 className="mb-0 pb-3">
+            <h6 className="mb-0 pb-3" id="practice">
                 <span className="option">Inicia sesión</span>
                 <span> </span>
                 <span className="option">Regístrate</span>
             </h6>
             <input className="checkbox" type="checkbox" id="reg-log" name="reg-log" />
-            <label htmlFor="reg-log"></label>
+            <label id="task" className="form" htmlFor="reg-log"></label>
                 <div className="card-3d-wrap">
                     <div className="card-3d-wrapper">
                         <div className="card-front">
@@ -236,11 +237,11 @@ const LoginForm = () => {
                                                 onChange={handleEmailChange}
                                                 name="logemail"
                                                 className={`form-style ${logineError ? 'input-error' : ''}`}
-                                                placeholder="Tu Correo"
+                                                placeholder=" Correo"
                                                 id="logemail"
                                                 autoComplete="off"
                                             />
-                                            <FaAt className="input-icon" />
+                                            <MailOutlineIcon className="input-icon" fontSize="large"/>
                                             {(logineError) && !loginpError &&<p className="error-text">{logineError}</p>}
                                         </div>
                                         <div className="form-group mt-2">
@@ -250,18 +251,19 @@ const LoginForm = () => {
                                                 onChange={handlePasswordChange}
                                                 name="logpass"
                                                 className={`form-style ${loginpError ? 'input-error' : ''}`}
-                                                placeholder="Tu Contraseña"
+                                                placeholder=" Contraseña"
                                                 id="logpass"
                                                 autoComplete="off"
                                             />  
+                                            <HttpsIcon className="input-icon" fontSize="large" />
                                             <button className="toggle-password" type="button" onClick={togglePasswordVisibility}>
                                                 {showPassword ? <FaEyeSlash />: <FaEye /> }
                                             </button>
-                                            <FaLock className="input-icon" />
+                                            {/* <FaLock className="input-icon" /> */}
                                             {(loginpError) && !logineError&&<p className="error-text">{loginpError}</p>}
                                             {loginpError && logineError && <p className="error-text">Verifique sus credenciales.</p>}
                                         </div>
-                                        <button className="btn mt-4" onClick={handleLogin} disabled={isRegistering}>
+                                        <button className="btn mt-4" id="ingresar" onClick={handleLogin} disabled={isRegistering}>
                                             {isRegistering ? <CircularProgress size={24} color="inherit" /> : 'Ingresar'}
                                         </button>
                                     <p className="mb-0 mt-4 text-center"><Link to ="/Gest/Recuperar" className="link">¿Olvidaste tu Contraseña?</Link></p>
@@ -271,7 +273,7 @@ const LoginForm = () => {
                         <div className="card-back">
                             <div className="center-wrap">
                                 <div className="section text-center">
-                                <h4 className="mb-4 pb-3">Resgristrate</h4>
+                                <h4 id="register" className="mb-4 pb-3">Resgristrate</h4>
                                     <div className="form-group">
                                         <input
                                             type="text"
@@ -327,7 +329,6 @@ const LoginForm = () => {
                         </div>
                     </div>
                 </div>
-        </div>
         <Snackbar
             open={openSnackbar}
             autoHideDuration={3000}

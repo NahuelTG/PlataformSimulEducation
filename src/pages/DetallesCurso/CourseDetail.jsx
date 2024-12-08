@@ -98,61 +98,70 @@ const CourseDetail = () => {
         component="img"
         image={course.imageUrl || 'default-image-url'}
         alt={course.groupName}
-        style={{ height: '300px', marginBottom: '1rem' }}
+        style={{ height: '258px', marginBottom: '1rem' }}
       />
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Typography variant="h3" gutterBottom style={{ color: '#1f2029', fontWeight: 'bold' }}>
           {course.groupName}
         </Typography>
-        <Chip
-          label={`Grupo: ${course.groupCode}`}
-          color="primary"
-          variant="outlined"
-          sx={{ marginLeft: '1rem', marginBottom: '1.5rem' }}
-          style={{ color: '#1e293b', borderColor: '#1e293b' }}
-        />
+        
       </Box>
       <Box 
         component="div"
         sx={{ 
-          padding: '1rem',
+          padding: '1.5rem',
           border: '1px solid #ccc',
           borderRadius: '8px',
-          marginBottom: '1rem',
-          textAlign: 'left',
-          backgroundColor: '#f9f9f9'
+          marginBottom: '1.5rem',
+          backgroundColor: '#f9f9f9',
+          boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+          lineHeight: 1.8,
+          textAlign: 'justify'
         }}
       >
-        <Typography variant="h6" gutterBottom>{course.groupDescription}</Typography>
+        <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: '#1f2029' }}>
+          Descripción del Curso
+        </Typography>
+        <Typography variant="body1" sx={{ color: '#333', marginBottom: '1rem' }}>
+          {course.groupDescription || 'Este grupo no tiene una descripción aún.'}
+        </Typography>
+        <Typography variant="body2" sx={{ color: '#555' }}>
+          Puedes suscribirte a este grupo para obtener más información, participar en discusiones y colaborar con otros miembros.
+        </Typography>
       </Box>
+
       {isSubscribed ? (
-        <Button 
-          variant="contained" 
-          sx={{ 
-            backgroundColor: '#f44336', 
-            color: '#fff', 
-            '&:hover': {
-              backgroundColor: '#d32f2f' // Red más oscuro para el hover
-            }
-          }} 
-          onClick={handleUnsubscribe}
-        >
-          Anular Suscripción
-        </Button>
+        <Box sx={{ marginBottom: '2rem', textAlign: 'center' }}>
+          <Button 
+            variant="contained" 
+            sx={{ 
+              backgroundColor: '#f44336', 
+              color: '#fff', 
+              '&:hover': {
+                backgroundColor: '#d32f2f' // Red más oscuro para el hover
+              }
+            }} 
+            onClick={handleUnsubscribe}
+          >
+            Anular Suscripción
+          </Button>
+        </Box>  
       ) : (
-        <Button 
-          variant="contained" 
-          sx={{ 
-            backgroundColor: '#102770', 
-            color: '#fff',
-            '&:hover': {
-              backgroundColor: '#0d1f4d' // Azul más oscuro para el hover
-            }
-          }} 
-          onClick={handleSubscribe}
-        >
-          Suscribirse al grupo
-        </Button>
+        <Box sx={{ marginBottom: '2rem', textAlign: 'center' }}>
+          <Button 
+            variant="contained" 
+            sx={{ 
+              backgroundColor: '#181616', 
+              color: '#fff',
+              '&:hover': {
+                backgroundColor: '#503459' 
+              }
+            }} 
+            onClick={handleSubscribe}
+          >
+            Unirse al Curso
+          </Button>
+        </Box>
       )}
       <Snackbar
         open={snackbar.open}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import loadingImage from './loading.gif';
+import loadingImage from './cargando.gif';
 
 function ProvarCodigo() {
   const [isLoading, setIsLoading] = useState(true);
@@ -28,7 +28,7 @@ function ProvarCodigo() {
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: '#282828',
+            backgroundColor: '#F5F5F5',
             zIndex: 1
           }}
         >
@@ -40,7 +40,7 @@ function ProvarCodigo() {
       )}
 
       <iframe
-        src="https://rextester.com/theme"
+        src="https://ideone.com/"
         title="RexTester"
         width="100%"
         height="100%"
