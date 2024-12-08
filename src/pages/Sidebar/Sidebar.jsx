@@ -7,7 +7,6 @@ import './Sidebar.css';
 import Logo from "../../assets/Logo.png";
 import TextLogo from "../../assets/TextLogo.png";
 import Home from "../../assets/Home.png";
-import AddClass from "../../assets/AddClass.png";
 import SupportClass from "../../assets/SupportClass.png";
 import IconForo from "../../assets/Foro.png";
 
@@ -52,12 +51,6 @@ const Sidebar = () => {
             <Link to="/Admin/inicio" style={{ display: 'flex', alignItems: 'center' }}>
               <img src={Home} alt="Inicio" style={{ width: '38px', height: '38px', marginRight: '25px' }} />
               Inicio
-            </Link>
-          </li>
-          <li>
-            <Link to="/Admin/crear-curso" style={{ display: 'flex', alignItems: 'center' }}>
-              <img src={AddClass} alt="Crear Curso" style={{ width: '38px', height: '38px', marginRight: '25px' }} />
-              Crear Clase
             </Link>
           </li>
           <li>
