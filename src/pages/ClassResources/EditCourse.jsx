@@ -183,40 +183,41 @@ const EditCourse = () => {
 
    const renderPreview = (files, topicIndex, existing = false) => {
       return files.map((file, index) => (
-         <div key={index} style={{ margin: "10px", display: "inline-block", position: "relative" }}>
-            {file.type?.includes("video") || file.url?.includes("video") ? (
-               <VideoLibraryIcon style={{ fontSize: "50px" }} />
-            ) : (
-               <PictureAsPdfIcon style={{ fontSize: "50px" }} />
-            )}
-            <Typography variant="body2">{file.name}</Typography>
-            <IconButton
-               style={{
-                  position: "absolute",
-                  top: 0,
-                  right: 0,
-                  padding: 0,
-                  backgroundColor: "rgba(255, 255, 255, 0.7)",
-               }}
-               onClick={() => (existing ? handleDeleteExistingFile(topicIndex, file) : handleRemoveFile(topicIndex, index))}
-            >
-               <DeleteIcon fontSize="small" />
-            </IconButton>
-            {existing && (
-               <IconButton
-                  style={{
-                     position: "absolute",
-                     top: 0,
-                     left: 0,
-                     padding: 0,
-                     backgroundColor: "rgba(255, 255, 255, 0.7)",
-                  }}
-                  onClick={() => handleEditExistingFile(topicIndex, file)}
-               >
-                  <EditIcon fontSize="small" />
+         <Card
+            key={index}
+            style={{
+               width: "100%",
+               maxWidth: "150px",
+               border: "2px solid black",
+               borderRadius: "10px",
+               height: "180px",
+               display: "flex",
+               flexDirection: "column",
+               justifyContent: "space-between",
+               marginBlock: "10px",
+            }}
+         >
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "16px" }}>
+               {file.type?.includes("video") || file.url?.includes("video") ? (
+                  <VideoLibraryIcon style={{ fontSize: "32px", color: "black" }} />
+               ) : (
+                  <PictureAsPdfIcon style={{ fontSize: "32px", color: "black" }} />
+               )}
+               <Typography variant="subtitle1" style={{ fontSize: "12px", fontWeight: "bold", textAlign: "center" }}>
+                  {file.name}
+               </Typography>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-around", paddingBottom: "16px" }}>
+               <IconButton onClick={() => (existing ? handleDeleteExistingFile(topicIndex, file) : handleRemoveFile(topicIndex, index))}>
+                  <DeleteIcon />
                </IconButton>
-            )}
-         </div>
+               {existing && (
+                  <IconButton onClick={() => handleEditExistingFile(topicIndex, file)}>
+                     <EditIcon />
+                  </IconButton>
+               )}
+            </div>
+         </Card>
       ));
    };
 
@@ -391,6 +392,7 @@ const EditCourse = () => {
                   <Typography variant="h5" style={{ marginBottom: "16px" }}>
                      Tema {index + 1}
                   </Typography>
+
                   <div
                      style={{
                         display: "flex",
@@ -441,6 +443,7 @@ const EditCourse = () => {
                      style={{ display: "none" }}
                      ref={(el) => (fileInputs.current[index] = el)}
                   />
+                  <div>{renderPreview(topics[index], index)}</div>
                   <label htmlFor={`course-input-${index}`}>
                      <Button
                         variant="outlined"
