@@ -13,10 +13,9 @@ import VideocamOffIcon from "@mui/icons-material/VideocamOff";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 
 const StyledButton = styled(Button)(({ theme }) => ({
-   backgroundColor: "black",
-   color: "white",
+   backgroundColor: "red",
    "&:hover": {
-      backgroundColor: "grey",
+      backgroundColor: "darkred",
    },
 }));
 
@@ -28,7 +27,6 @@ const VideoCall = () => {
    const [users, setUsers] = useState([]);
    const [isMuted, setIsMuted] = useState(false);
    const [isCameraOff, setIsCameraOff] = useState(false);
-   const [incomingCall, setIncomingCall] = useState(null);
    const [notificationOpen, setNotificationOpen] = useState(false);
    const localVideoRef = useRef(null);
    const remoteVideoRef = useRef(null);
@@ -37,111 +35,127 @@ const VideoCall = () => {
 
    useEffect(() => {
       const fetchUsers = async () => {
-         try {
-            const querySnapshot = await getDocs(collection(firestore, "users"));
-            const usersList = [];
-            querySnapshot.forEach((doc) => {
-               const user = doc.data();
-               if (user.uid !== currentUser.uid && user.role !== "admin") {
-                  usersList.push({
-                     label: `${user.username} (${user.role})`,
-                     value: doc.id,
-                  });
+         const querySnapshot = await getDocs(collection(firestore, "users"));
+         const usersList = [];
+         const usernameCount = {};
+
+         querySnapshot.forEach((doc) => {
+            const user = doc.data();
+            if (user.uid !== currentUser.uid && user.role !== "admin") {
+               if (!usernameCount[user.username]) {
+                  usernameCount[user.username] = 0;
                }
-            });
-            setUsers(usersList);
-         } catch (error) {
-            console.error("Error fetching users:", error);
-         }
+               usernameCount[user.username]++;
+            }
+         });
+
+         querySnapshot.forEach((doc) => {
+            const user = doc.data();
+            if (user.uid !== currentUser.uid && user.role !== "admin") {
+               let label = `${user.username} (${user.role})`;
+               if (usernameCount[user.username] > 1) {
+                  const emailWithoutDomain = user.email.split("@")[0];
+                  label += ` - ${emailWithoutDomain}`;
+               }
+               usersList.push({
+                  label,
+                  value: doc.id,
+                  role: user.role,
+               });
+            }
+         });
+
+         setUsers(usersList);
       };
+
       fetchUsers();
    }, [currentUser.uid]);
 
    useEffect(() => {
-      let newPeer;
+      const newPeer = new Peer(uidf);
+      setPeer(newPeer);
 
-      const initializePeer = (id = uidf) => {
-         try {
-            newPeer = new Peer(id, {
-               config: {
-                  iceServers: [
-                     { urls: "stun:stun.l.google.com:19302" }, // Servidor STUN público
-                  ],
-               },
+      newPeer.on("call", (call) => {
+         setNotificationOpen(true);
+         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+            setLocalStream(stream);
+            localVideoRef.current.srcObject = stream;
+            call.answer(stream);
+            call.on("stream", (remoteStream) => {
+               setRemoteStream(remoteStream);
+               remoteVideoRef.current.srcObject = remoteStream;
             });
 
-            newPeer.on("open", (peerId) => {
-               console.log("Peer conectado con ID:", peerId);
+            call.on("close", () => {
+               window.location.reload();
             });
 
-            newPeer.on("call", (call) => {
-               setIncomingCall(call);
-               setNotificationOpen(true);
+            call.on("error", () => {
+               window.location.reload();
             });
-
-            newPeer.on("disconnected", () => {
-               console.warn("Peer desconectado. Intentando reconectar...");
-               newPeer.reconnect();
-            });
-
-            newPeer.on("error", (err) => {
-               console.error("Peer error:", err);
-               if (err.type === "unavailable-id") {
-                  console.warn("ID en uso. Generando una nueva ID.");
-                  newPeer.destroy();
-                  initializePeer(); // Genera una nueva ID automáticamente
-               } else if (err.type === "network") {
-                  console.warn("Error de red. Reintentando conexión...");
-               }
-            });
-
-            setPeer(newPeer);
-         } catch (error) {
-            console.error("Error inicializando Peer:", error);
-         }
-      };
-
-      initializePeer();
+         });
+      });
 
       return () => {
          if (localStream) {
             localStream.getTracks().forEach((track) => track.stop());
          }
-         if (newPeer) {
-            newPeer.destroy();
-         }
+         newPeer.destroy();
       };
-   }, [uidf, localStream]);
+   }, [uidf]);
 
-   const handleAcceptCall = () => {
-      if (incomingCall) {
-         navigator.mediaDevices
-            .getUserMedia({ video: true, audio: true })
-            .then((stream) => {
-               setLocalStream(stream);
-               localVideoRef.current.srcObject = stream;
-               incomingCall.answer(stream);
+   useEffect(() => {
+      if (remoteStream) {
+         const onStreamEnded = () => {
+            window.location.reload();
+         };
 
-               incomingCall.on("stream", (remoteStream) => {
-                  setRemoteStream(remoteStream);
-                  remoteVideoRef.current.srcObject = remoteStream;
-               });
+         remoteStream.getTracks().forEach((track) => {
+            track.addEventListener("ended", onStreamEnded);
+         });
 
-               setNotificationOpen(false);
-               setIncomingCall(null);
-            })
-            .catch((error) => {
-               console.error("Error accepting call:", error);
-               alert("No se pudo acceder a la cámara/micrófono.");
+         return () => {
+            remoteStream.getTracks().forEach((track) => {
+               track.removeEventListener("ended", onStreamEnded);
             });
+         };
+      }
+   }, [remoteStream]);
+
+   const startCall = () => {
+      if (remoteUserId.trim() !== "") {
+         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+            setLocalStream(stream);
+            localVideoRef.current.srcObject = stream;
+            const call = peer.call(remoteUserId, stream);
+            call.on("stream", (remoteStream) => {
+               setRemoteStream(remoteStream);
+               remoteVideoRef.current.srcObject = remoteStream;
+            });
+
+            call.on("close", () => {
+               window.location.reload();
+            });
+
+            call.on("error", () => {
+               window.location.reload();
+            });
+         });
+      } else {
+         alert("Please enter a valid user ID to call.");
       }
    };
 
-   const handleRejectCall = () => {
-      if (incomingCall) {
-         incomingCall.close();
-         setNotificationOpen(false);
-         setIncomingCall(null);
+   const endCall = () => {
+      if (localStream) {
+         localStream.getTracks().forEach((track) => track.stop());
+         setLocalStream(null);
+         setRemoteStream(null);
+      }
+      if (peer) {
+         peer.destroy();
+         setPeer(new Peer(uidf));
+         window.location.reload();
       }
    };
 
@@ -165,46 +179,6 @@ const VideoCall = () => {
       }
    };
 
-   const startCall = () => {
-      if (remoteUserId.trim() !== "") {
-         navigator.mediaDevices
-            .getUserMedia({ video: true, audio: true })
-            .then((stream) => {
-               setLocalStream(stream);
-               localVideoRef.current.srcObject = stream;
-               const call = peer.call(remoteUserId, stream);
-
-               call.on("stream", (remoteStream) => {
-                  setRemoteStream(remoteStream);
-                  remoteVideoRef.current.srcObject = remoteStream;
-               });
-            })
-            .catch((error) => {
-               console.error("Error starting call:", error);
-               alert("No se pudo acceder a la cámara/micrófono.");
-            });
-      } else {
-         alert("Por favor selecciona un usuario válido para llamar.");
-      }
-   };
-
-   const endCall = () => {
-      if (localStream) {
-         localStream.getTracks().forEach((track) => track.stop());
-         localVideoRef.current.srcObject = null; // Limpia el video local
-         setLocalStream(null);
-      }
-      if (remoteStream) {
-         remoteStream.getTracks().forEach((track) => track.stop());
-         remoteVideoRef.current.srcObject = null; // Limpia el video remoto
-         setRemoteStream(null);
-      }
-      if (peer) {
-         peer.destroy();
-         setPeer(new Peer(uidf));
-      }
-   };
-
    return (
       <div>
          <Typography variant="h4" gutterBottom>
@@ -217,6 +191,8 @@ const VideoCall = () => {
                   <IconButton onClick={() => handleFullscreen(localVideoRef)}>
                      <FullscreenIcon />
                   </IconButton>
+                  <IconButton onClick={toggleMute}>{isMuted ? <MicOffIcon /> : <MicIcon />}</IconButton>
+                  <IconButton onClick={toggleCamera}>{isCameraOff ? <VideocamOffIcon /> : <VideocamIcon />}</IconButton>
                </div>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -237,35 +213,21 @@ const VideoCall = () => {
             renderInput={(params) => <TextField {...params} label="Select User" variant="outlined" />}
             style={{ marginTop: 20, marginBottom: 20 }}
          />
-         <div>
-            <IconButton onClick={toggleMute}>{isMuted ? <MicOffIcon /> : <MicIcon />}</IconButton>
-            <IconButton onClick={toggleCamera}>{isCameraOff ? <VideocamOffIcon /> : <VideocamIcon />}</IconButton>
-         </div>
-         <Button variant="contained" onClick={startCall} style={{ marginRight: 10 }}>
+         <Button variant="contained" color="primary" onClick={startCall} style={{ marginRight: 10 }}>
             Iniciar llamada
          </Button>
          <StyledButton variant="contained" onClick={endCall} startIcon={<CallEndIcon />}>
             Colgar llamada
          </StyledButton>
-
-         <Snackbar open={notificationOpen} onClose={() => setNotificationOpen(false)}>
-            <Alert
-               onClose={() => setNotificationOpen(false)}
-               severity="info"
-               action={
-                  <>
-                     <Button color="inherit" size="small" onClick={handleAcceptCall}>
-                        Aceptar
-                     </Button>
-                     <Button color="inherit" size="small" onClick={handleRejectCall}>
-                        Rechazar
-                     </Button>
-                  </>
-               }
-            >
+         <Snackbar open={notificationOpen} autoHideDuration={3000} onClose={() => setNotificationOpen(false)}>
+            <Alert onClose={() => setNotificationOpen(false)} severity="info">
                Tienes una llamada entrante.
             </Alert>
          </Snackbar>
+         <Typography variant="body1" style={{ marginTop: 20 }}>
+            Ambos usuarios deben estar en la ventana de VideoCall para que la funcionalidad funcione. Selecciona un usuario y haz clic en
+            "Iniciar llamada".
+         </Typography>
       </div>
    );
 };
