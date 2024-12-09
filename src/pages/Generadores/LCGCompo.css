@@ -3,57 +3,61 @@
   flex-wrap: wrap;
   padding: 20px;
   box-sizing: border-box;
+  justify-content: center; /* Centraliza los contenidos */
 }
 
 .left-container,
 .right-container {
-  flex: 1 1 45%; /* Flex grow, flex shrink, flex basis */
-  min-width: 300px; /* Ensures a minimum width for smaller screens */
-  margin: 10px;
+  flex: 1 1 100%;
+  margin: 10px 0;
   box-sizing: border-box;
 }
 
-.chart-container,
-.code-section,
-.inputs-container,
-.equation,
-.buttons,
-ul {
+.chart-container {
+  flex: 1 1 100%;
+  margin: 10px auto;
+  background-color: #f9f9f9;
+  padding: 10px; /* Reduce el padding */
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-height: 300px; /* Limita la altura máxima */
+  overflow: hidden; /* Evita contenido desbordado */
+}
+
+.buttons {
+  display: flex;
+  justify-content: center; /* Centra los botones */
+  gap: 15px; /* Espaciado entre botones */
   margin-bottom: 20px;
 }
 
-.chart-container {
-  background-color: #f9f9f9;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.code-section button,
 .buttons button {
-  display: inline-block;
   padding: 10px 20px;
-  margin: 5px;
-  background-color: #007bff;
-  color: #fff;
+  background-color: #000; /* Fondo negro */
+  color: white; /* Texto blanco */
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s, opacity 0.3s;
+  transition: background-color 0.3s ease;
 }
 
-.code-section button:hover,
 .buttons button:hover {
-  background-color: #0056b3;
+  background-color: #333; /* Negro más claro al pasar el mouse */
 }
 
-.code-section button:disabled,
 .buttons button:disabled {
-  background-color: #cccccc; /* Light gray */
-  color: #666666; /* Darker gray for text */
-  cursor: not-allowed; /* Change cursor to indicate disabled state */
-  opacity: 0.6; /* Make the button appear opaque */
+  background-color: #ccc; /* Fondo gris para botones deshabilitados */
+  cursor: not-allowed;
+}
+
+.inputs-container {
+  flex: 1 1 40%;
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 .inputs-container label {
@@ -69,54 +73,46 @@ ul {
   font-size: 1rem;
 }
 
-.equation p {
-  font-size: 1.2rem;
+.equation table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.equation th,
+.equation td {
+  border: 1px solid #ddd;
+  text-align: left;
+  padding: 8px;
+}
+
+.equation th {
+  background-color: #f4f4f4;
   font-weight: bold;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
+.equation tr:nth-child(even) {
+  background-color: #f9f9f9;
 }
 
-ul li {
-  padding: 5px 0;
+.equation tr:hover {
+  background-color: #f1f1f1;
 }
-
+.equation {
+  padding: 38px;
+}
 @media (max-width: 768px) {
-  .left-container,
-  .right-container {
+  .chart-container,
+  .inputs-container {
     flex: 1 1 100%;
   }
-}
 
-@media (max-width: 550px) {
-  .chart-container,
-  .code-section button,
-  .inputs-container,
-  .equation,
-  .buttons button,
-  ul {
+  .buttons {
+    flex-wrap: wrap;
+  }
+
+  .buttons button {
     margin-bottom: 10px;
-  }
-
-  .inputs-container input {
-    font-size: 0.9rem;
-  }
-  .lcg-container {
-    max-width: 100vw;
-    margin: -10;
-    padding: 0;
-    overflow: hidden;
-  }
-
-  .equation p {
-    font-size: 1rem;
-  }
-  .left-container,
-  .right-container {
-    min-width: 200px;
-    max-width: 100vw;
-    margin: 0;
+    width: 100%;
   }
 }
