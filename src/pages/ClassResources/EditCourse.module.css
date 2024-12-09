@@ -73,7 +73,7 @@ button,
 button:hover,
 .MuiIconButton-root:hover {
    background-color: black;
-   color: rgb(255, 0, 0);
+   color: rgb(255, 255, 255);
    border-color: white;
 }
 

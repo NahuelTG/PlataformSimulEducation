@@ -27,10 +27,7 @@ const VideoCall = () => {
    const [users, setUsers] = useState([]);
    const [isMuted, setIsMuted] = useState(false);
    const [isCameraOff, setIsCameraOff] = useState(false);
-   const [incomingCall, setIncomingCall] = useState(null);
-   const [callerName, setCallerName] = useState("");
    const [notificationOpen, setNotificationOpen] = useState(false);
-   const [rejectionNotification, setRejectionNotification] = useState(false);
    const localVideoRef = useRef(null);
    const remoteVideoRef = useRef(null);
    const { currentUser } = useContext(UserContext);
@@ -63,7 +60,6 @@ const VideoCall = () => {
                usersList.push({
                   label,
                   value: doc.id,
-                  username: user.username,
                   role: user.role,
                });
             }
@@ -80,13 +76,24 @@ const VideoCall = () => {
       setPeer(newPeer);
 
       newPeer.on("call", (call) => {
-         // Find the caller's name
-         const caller = users.find((user) => user.value === call.peer);
-         const name = caller ? caller.username : "Desconocido";
-
-         setIncomingCall(call);
-         setCallerName(name);
          setNotificationOpen(true);
+         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+            setLocalStream(stream);
+            localVideoRef.current.srcObject = stream;
+            call.answer(stream);
+            call.on("stream", (remoteStream) => {
+               setRemoteStream(remoteStream);
+               remoteVideoRef.current.srcObject = remoteStream;
+            });
+
+            call.on("close", () => {
+               window.location.reload();
+            });
+
+            call.on("error", () => {
+               window.location.reload();
+            });
+         });
       });
 
       return () => {
@@ -95,7 +102,7 @@ const VideoCall = () => {
          }
          newPeer.destroy();
       };
-   }, [uidf, users, localStream]);
+   }, [uidf]);
 
    useEffect(() => {
       if (remoteStream) {
@@ -152,33 +159,6 @@ const VideoCall = () => {
       }
    };
 
-   const acceptCall = () => {
-      if (incomingCall) {
-         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-            setLocalStream(stream);
-            localVideoRef.current.srcObject = stream;
-            incomingCall.answer(stream);
-
-            incomingCall.on("stream", (remoteStream) => {
-               setRemoteStream(remoteStream);
-               remoteVideoRef.current.srcObject = remoteStream;
-            });
-
-            setNotificationOpen(false);
-            setIncomingCall(null);
-         });
-      }
-   };
-
-   const rejectCall = () => {
-      if (incomingCall) {
-         incomingCall.close();
-         setNotificationOpen(false);
-         setIncomingCall(null);
-         setRejectionNotification(true); // Show rejection notification
-      }
-   };
-
    const toggleMute = () => {
       if (localStream) {
          localStream.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
@@ -200,74 +180,201 @@ const VideoCall = () => {
    };
 
    return (
-      <div>
-         <Typography variant="h4" gutterBottom>
+      <div
+         style={{
+            backgroundColor: "white",
+            color: "black",
+            minHeight: "100vh",
+            display: "flex",
+            flexDirection: "column",
+            padding: "20px",
+         }}
+      >
+         <Typography
+            variant="h4"
+            gutterBottom
+            style={{
+               textAlign: "center",
+               marginBottom: "20px",
+               fontWeight: "bold",
+               color: "black",
+            }}
+         >
             Video Llamada
          </Typography>
-         <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-               <video ref={localVideoRef} autoPlay muted style={{ width: "100%", border: "1px solid black" }} />
-               <div>
-                  <IconButton onClick={() => handleFullscreen(localVideoRef)}>
-                     <FullscreenIcon />
-                  </IconButton>
-                  <IconButton onClick={toggleMute}>{isMuted ? <MicOffIcon /> : <MicIcon />}</IconButton>
-                  <IconButton onClick={toggleCamera}>{isCameraOff ? <VideocamOffIcon /> : <VideocamIcon />}</IconButton>
-               </div>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-               <video ref={remoteVideoRef} autoPlay style={{ width: "100%", border: "1px solid black" }} />
-               <div>
-                  <IconButton onClick={() => handleFullscreen(remoteVideoRef)}>
-                     <FullscreenIcon />
-                  </IconButton>
-               </div>
-            </Grid>
-         </Grid>
-         <Autocomplete
-            options={users}
-            getOptionLabel={(option) => option.label}
-            onChange={(event, newValue) => {
-               setRemoteUserId(newValue ? newValue.value : "");
+         {/* Información adicional */}
+         <Typography
+            variant="body1"
+            style={{
+               marginBottom: "20px",
+               textAlign: "center",
+               fontWeight: "lighter",
+               fontSize: "14px",
+               color: "grey",
             }}
-            renderInput={(params) => <TextField {...params} label="Select User" variant="outlined" />}
-            style={{ marginTop: 20, marginBottom: 20 }}
-         />
-         <Button variant="contained" color="primary" onClick={startCall} style={{ marginRight: 10 }}>
-            Iniciar llamada
-         </Button>
-         <StyledButton variant="contained" onClick={endCall} startIcon={<CallEndIcon />}>
-            Colgar llamada
-         </StyledButton>
+         >
+            Ambos usuarios deben estar en la ventana de Video llamada para que pueda realizar la llamada. Selecciona un usuario y haz clic
+            en "Reunirse".
+         </Typography>
 
-         {/* Incoming call notification */}
-         <Snackbar open={notificationOpen} onClose={() => setNotificationOpen(false)}>
-            <Alert
-               action={
-                  <>
-                     <Button color="inherit" size="small" onClick={acceptCall}>
-                        Aceptar
-                     </Button>
-                     <Button color="inherit" size="small" onClick={rejectCall}>
-                        Rechazar
-                     </Button>
-                  </>
-               }
-               severity="info"
+         <div style={{ display: "flex", flex: 1, gap: "20px", position: "relative" }}>
+            {/* Contenedor de videos */}
+            <div
+               style={{
+                  flex: 2,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  gap: "20px",
+                  position: "relative",
+               }}
             >
-               {callerName} te está llamando.
+               {/* Video local */}
+               <div
+                  style={{
+                     position: "relative",
+                     border: "2px solid black",
+                     borderRadius: "10px",
+                     overflow: "hidden",
+                     boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+                  }}
+               >
+                  <video ref={localVideoRef} autoPlay muted style={{ width: "100%", height: "auto", display: "block" }} />
+                  <div
+                     style={{
+                        position: "absolute",
+                        bottom: "10px",
+                        right: "10px",
+                        display: "flex",
+                        gap: "10px",
+                        backgroundColor: "rgba(255,255,255,0.8)",
+                        padding: "5px",
+                        borderRadius: "5px",
+                     }}
+                  >
+                     <IconButton onClick={toggleMute} style={{ color: isMuted ? "grey" : "black" }}>
+                        {isMuted ? <MicOffIcon /> : <MicIcon />}
+                     </IconButton>
+                     <IconButton onClick={toggleCamera} style={{ color: isCameraOff ? "grey" : "black" }}>
+                        {isCameraOff ? <VideocamOffIcon /> : <VideocamIcon />}
+                     </IconButton>
+                     <IconButton onClick={() => handleFullscreen(localVideoRef)} style={{ color: "black" }}>
+                        <FullscreenIcon />
+                     </IconButton>
+                  </div>
+                  {/* Video remoto en la esquina */}
+                  <div
+                     style={{
+                        position: "absolute",
+                        bottom: "10px",
+                        left: "10px",
+                        width: "30%",
+                        height: "auto",
+                        border: "2px solid black",
+                        borderRadius: "10px",
+                        overflow: "hidden",
+                        backgroundColor: "white",
+                        boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+                     }}
+                  >
+                     <video ref={remoteVideoRef} autoPlay style={{ width: "100%", height: "100%", display: "block" }} />
+                     <div
+                        style={{
+                           position: "absolute",
+                           bottom: "5px",
+                           right: "5px",
+                           display: "flex",
+                           gap: "5px",
+                           backgroundColor: "rgba(255,255,255,0.8)",
+                           padding: "3px",
+                           borderRadius: "5px",
+                        }}
+                     >
+                        <IconButton onClick={() => handleFullscreen(remoteVideoRef)} style={{ color: "black" }}>
+                           <FullscreenIcon />
+                        </IconButton>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            {/* Controles generales */}
+            <div
+               style={{
+                  borderLeft: "2px solid black",
+                  padding: "10px",
+               }}
+            >
+               <Autocomplete
+                  options={users}
+                  getOptionLabel={(option) => option.label}
+                  onChange={(event, newValue) => {
+                     setRemoteUserId(newValue ? newValue.value : "");
+                  }}
+                  renderInput={(params) => (
+                     <TextField
+                        {...params}
+                        label="Usuario"
+                        variant="outlined"
+                        style={{
+                           backgroundColor: "white",
+                           borderRadius: "5px",
+                           marginBottom: "20px",
+                        }}
+                     />
+                  )}
+                  style={{ width: "100%" }}
+               />
+               <div style={{ width: "100%", textAlign: "center" }}>
+                  <Button
+                     variant="contained"
+                     onClick={startCall}
+                     style={{
+                        marginBottom: "10px",
+                        backgroundColor: "black",
+                        color: "white",
+                        fontWeight: "bold",
+                        borderRadius: "5px",
+                        width: "100%",
+                     }}
+                  >
+                     Reunirse
+                  </Button>
+                  <StyledButton
+                     variant="contained"
+                     onClick={endCall}
+                     startIcon={<CallEndIcon />}
+                     style={{
+                        width: "100%",
+                        backgroundColor: "red",
+                        color: "white",
+                     }}
+                  >
+                     Colgar
+                  </StyledButton>
+               </div>
+            </div>
+         </div>
+
+         {/* Notificaciones */}
+         <Snackbar
+            open={notificationOpen}
+            autoHideDuration={3000}
+            onClose={() => setNotificationOpen(false)}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+         >
+            <Alert
+               onClose={() => setNotificationOpen(false)}
+               severity="info"
+               style={{
+                  backgroundColor: "black",
+                  color: "white",
+                  fontWeight: "bold",
+               }}
+            >
+               Tienes una llamada entrante.
             </Alert>
          </Snackbar>
-
-         {/* Call rejection notification */}
-         <Snackbar open={rejectionNotification} autoHideDuration={3000} onClose={() => setRejectionNotification(false)}>
-            <Alert severity="error">Has rechazado la llamada.</Alert>
-         </Snackbar>
-
-         <Typography variant="body1" style={{ marginTop: 20 }}>
-            Ambos usuarios deben estar en la ventana de VideoCall para que la funcionalidad funcione. Selecciona un usuario y haz clic en
-            "Iniciar llamada".
-         </Typography>
       </div>
    );
 };
