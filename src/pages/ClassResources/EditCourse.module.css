@@ -1,0 +1,27 @@
+.cardContent {
+   display: flex;
+   flex-wrap: wrap; /* Permite que las tarjetas salten a la siguiente fila si no caben */
+   gap: 16px; /* Espaciado entre las tarjetas */
+   justify-content: center; /* Centra las tarjetas horizontalmente */
+}
+
+.cardRecursos {
+   padding-inline: 16px;
+   padding-top: 16px;
+}
+
+.cardActionsRecursos {
+   padding-inline: 16px;
+   padding-bottom: 16px;
+}
+
+/* Media query para pantallas pequeñas */
+@media (max-width: 600px) {
+   .cardContent {
+      justify-content: center; /* Asegura que las tarjetas estén centradas */
+   }
+
+   .cardRecursos {
+      width: 100%; /* Las tarjetas ocuparán todo el ancho disponible */
+   }
+}
