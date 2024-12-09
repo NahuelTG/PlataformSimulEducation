@@ -19,6 +19,7 @@ function GeneradorCongruencialMixto() {
   const [numbers, setNumbers] = useState([]);
   const [periodLength, setPeriodLength] = useState(null);
   const [extendedTable, setExtendedTable] = useState([]);
+  const [error, setError] = useState('');
 
   const generateNumbers = () => {
     if (seed === '' || a === '' || c === '' || m === '') {
@@ -30,6 +31,14 @@ function GeneradorCongruencialMixto() {
     const numA = Number(a);
     const numC = Number(c);
     const numM = Number(m);
+
+    // Validaciones para asegurarse de que los valores cumplen con las propiedades necesarias
+    if (numM <= 0 || numA <= 0 || numC < 0 || numC >= numM || gcd(numA, numM) !== 1) {
+      setError('Los valores ingresados no cumplen con las propiedades necesarias.');
+      return;
+    }
+
+    setError(''); // Limpiar el mensaje de error
 
     const generator = LCG(numSeed, numA, numC, numM);
     const values = [];
@@ -63,10 +72,16 @@ function GeneradorCongruencialMixto() {
       current = next;
     }
 
+    if (!repeated) {
+      setError('Se alcanzó el límite de iteraciones sin repetir un valor de Xn.');
+    }
+
     setNumbers(values);
     setPeriodLength(values.length);
     setExtendedTable(tableData);
   };
+
+  const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
 
   const chartData = {
     labels: numbers.map((_, index) => index),
@@ -131,34 +146,38 @@ function GeneradorCongruencialMixto() {
 
         <div className="results-section-container">
           <h2>Tabla de Resultados</h2>
-          {numbers.length > 0 && (
-            <div>
-              <p>Longitud del período: {periodLength}</p>
-              <table>
-                <thead>
-                  <tr>
-                    <th>n</th>
-                    <th>Xn</th>
-                    <th>a*Xn</th>
-                    <th>a*Xn+c</th>
-                    <th>Xn+1</th>
-                    <th>Un</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {extendedTable.map((row, index) => (
-                    <tr key={index}>
-                      <td>{row.n}</td>
-                      <td>{row.Xn}</td>
-                      <td>{row.aXn}</td>
-                      <td>{row.aXnPlusC}</td>
-                      <td>{row.XnPlus1}</td>
-                      <td>{row.Un}</td>
+          {error ? (
+            <p className="error-message">{error}</p>
+          ) : (
+            numbers.length > 0 && (
+              <div>
+                <p>Longitud del período: {periodLength}</p>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>n</th>
+                      <th>Xn</th>
+                      <th>a*Xn</th>
+                      <th>a*Xn+c</th>
+                      <th>Xn+1</th>
+                      <th>Un</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {extendedTable.map((row, index) => (
+                      <tr key={index}>
+                        <td>{row.n}</td>
+                        <td>{row.Xn}</td>
+                        <td>{row.aXn}</td>
+                        <td>{row.aXnPlusC}</td>
+                        <td>{row.XnPlus1}</td>
+                        <td>{row.Un}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )
           )}
         </div>
         <div className="chart-section">
