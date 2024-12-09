@@ -6,11 +6,13 @@ import { firestore } from "../../connection/firebaseConfig";
 import { Autocomplete, TextField, Button, Grid, Typography, IconButton, Snackbar, Alert } from "@mui/material";
 import { styled } from "@mui/system";
 import CallEndIcon from "@mui/icons-material/CallEnd";
+import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
+import MinimizeIcon from "@mui/icons-material/Minimize";
 import MicIcon from "@mui/icons-material/Mic";
 import MicOffIcon from "@mui/icons-material/MicOff";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import VideocamOffIcon from "@mui/icons-material/VideocamOff";
-import FullscreenIcon from "@mui/icons-material/Fullscreen";
 
 const StyledButton = styled(Button)(({ theme }) => ({
    backgroundColor: "red",
@@ -32,6 +34,7 @@ const VideoCall = () => {
    const remoteVideoRef = useRef(null);
    const { currentUser } = useContext(UserContext);
    const uidf = currentUser.uid;
+   const [isMinimized, setIsMinimized] = useState(false);
 
    useEffect(() => {
       const fetchUsers = async () => {
@@ -84,6 +87,7 @@ const VideoCall = () => {
             call.on("stream", (remoteStream) => {
                setRemoteStream(remoteStream);
                remoteVideoRef.current.srcObject = remoteStream;
+               remoteVideoRef.current.muted = false; // Activar audio en el remoto
             });
 
             call.on("close", () => {
@@ -104,23 +108,17 @@ const VideoCall = () => {
       };
    }, [uidf]);
 
+   // Mantener los estados de audio/video cuando se actualicen
    useEffect(() => {
-      if (remoteStream) {
-         const onStreamEnded = () => {
-            window.location.reload();
-         };
-
-         remoteStream.getTracks().forEach((track) => {
-            track.addEventListener("ended", onStreamEnded);
+      if (localStream) {
+         localStream.getAudioTracks().forEach((track) => {
+            track.enabled = !isMuted;
          });
-
-         return () => {
-            remoteStream.getTracks().forEach((track) => {
-               track.removeEventListener("ended", onStreamEnded);
-            });
-         };
+         localStream.getVideoTracks().forEach((track) => {
+            track.enabled = !isCameraOff;
+         });
       }
-   }, [remoteStream]);
+   }, [isMuted, isCameraOff, localStream]);
 
    const startCall = () => {
       if (remoteUserId.trim() !== "") {
@@ -131,6 +129,7 @@ const VideoCall = () => {
             call.on("stream", (remoteStream) => {
                setRemoteStream(remoteStream);
                remoteVideoRef.current.srcObject = remoteStream;
+               remoteVideoRef.current.muted = false; // Activar audio remoto
             });
 
             call.on("close", () => {
@@ -160,22 +159,36 @@ const VideoCall = () => {
    };
 
    const toggleMute = () => {
-      if (localStream) {
-         localStream.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
-         setIsMuted((prev) => !prev);
-      }
+      setIsMuted((prev) => !prev);
    };
 
    const toggleCamera = () => {
-      if (localStream) {
-         localStream.getVideoTracks().forEach((track) => (track.enabled = !track.enabled));
-         setIsCameraOff((prev) => !prev);
-      }
+      setIsCameraOff((prev) => !prev);
    };
 
    const handleFullscreen = (videoRef) => {
       if (videoRef.current) {
          videoRef.current.requestFullscreen?.();
+      }
+   };
+
+   const toggleVideos = () => {
+      if (localVideoRef.current && remoteVideoRef.current) {
+         // Intercambiar streams
+         const tempStream = localVideoRef.current.srcObject;
+         localVideoRef.current.srcObject = remoteVideoRef.current.srcObject;
+         remoteVideoRef.current.srcObject = tempStream;
+
+         // Ajustar audio: mutear el video pequeño y activar el grande
+         if (localVideoRef.current.srcObject === localStream) {
+            // Si el stream local ahora está en el video pequeño
+            localVideoRef.current.muted = true;
+            remoteVideoRef.current.muted = false;
+         } else {
+            // Si el stream remoto ahora está en el video pequeño
+            localVideoRef.current.muted = false;
+            remoteVideoRef.current.muted = true;
+         }
       }
    };
 
@@ -229,7 +242,7 @@ const VideoCall = () => {
                   position: "relative",
                }}
             >
-               {/* Video local */}
+               {/* Video grande (remoto) */}
                <div
                   style={{
                      position: "relative",
@@ -239,7 +252,7 @@ const VideoCall = () => {
                      boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
                   }}
                >
-                  <video ref={localVideoRef} autoPlay muted style={{ width: "100%", height: "auto", display: "block" }} />
+                  <video ref={remoteVideoRef} autoPlay style={{ width: "100%", height: "auto", display: "block" }} />
                   <div
                      style={{
                         position: "absolute",
@@ -252,48 +265,46 @@ const VideoCall = () => {
                         borderRadius: "5px",
                      }}
                   >
-                     <IconButton onClick={toggleMute} style={{ color: isMuted ? "grey" : "black" }}>
-                        {isMuted ? <MicOffIcon /> : <MicIcon />}
-                     </IconButton>
-                     <IconButton onClick={toggleCamera} style={{ color: isCameraOff ? "grey" : "black" }}>
-                        {isCameraOff ? <VideocamOffIcon /> : <VideocamIcon />}
-                     </IconButton>
-                     <IconButton onClick={() => handleFullscreen(localVideoRef)} style={{ color: "black" }}>
+                     <IconButton onClick={() => handleFullscreen(remoteVideoRef)} style={{ color: "black" }}>
                         <FullscreenIcon />
                      </IconButton>
+                     <IconButton onClick={toggleVideos} style={{ color: "black" }}>
+                        <SwapHorizIcon />
+                     </IconButton>
                   </div>
-                  {/* Video remoto en la esquina */}
+               </div>
+               {/* Video pequeño (local) */}
+               <div
+                  style={{
+                     position: "absolute",
+                     bottom: "20px",
+                     left: "10px",
+                     width: isMinimized ? "10%" : "30%",
+                     height: isMinimized ? "10%" : "auto",
+                     border: "2px solid black",
+                     borderRadius: "10px",
+                     overflow: "hidden",
+                     backgroundColor: "white",
+                     boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+                     transition: "all 0.3s ease",
+                  }}
+               >
+                  <video ref={localVideoRef} autoPlay muted style={{ width: "100%", height: "100%", display: "block" }} />
                   <div
                      style={{
                         position: "absolute",
-                        bottom: "10px",
-                        left: "10px",
-                        width: "30%",
-                        height: "auto",
-                        border: "2px solid black",
-                        borderRadius: "10px",
-                        overflow: "hidden",
-                        backgroundColor: "white",
-                        boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+                        bottom: "5px",
+                        right: "5px",
+                        display: "flex",
+                        gap: "5px",
+                        backgroundColor: "rgba(255,255,255,0.8)",
+                        padding: "3px",
+                        borderRadius: "5px",
                      }}
                   >
-                     <video ref={remoteVideoRef} autoPlay style={{ width: "100%", height: "100%", display: "block" }} />
-                     <div
-                        style={{
-                           position: "absolute",
-                           bottom: "5px",
-                           right: "5px",
-                           display: "flex",
-                           gap: "5px",
-                           backgroundColor: "rgba(255,255,255,0.8)",
-                           padding: "3px",
-                           borderRadius: "5px",
-                        }}
-                     >
-                        <IconButton onClick={() => handleFullscreen(remoteVideoRef)} style={{ color: "black" }}>
-                           <FullscreenIcon />
-                        </IconButton>
-                     </div>
+                     <IconButton onClick={() => setIsMinimized(!isMinimized)} style={{ color: "black" }}>
+                        {isMinimized ? <FullscreenIcon /> : <MinimizeIcon />}
+                     </IconButton>
                   </div>
                </div>
             </div>
@@ -325,6 +336,17 @@ const VideoCall = () => {
                   )}
                   style={{ width: "100%" }}
                />
+
+               {/* Botones de control de micrófono y cámara */}
+               <div style={{ display: "flex", gap: "10px", justifyContent: "center", marginBottom: "20px" }}>
+                  <IconButton onClick={toggleMute} style={{ color: isMuted ? "grey" : "black" }}>
+                     {isMuted ? <MicOffIcon /> : <MicIcon />}
+                  </IconButton>
+                  <IconButton onClick={toggleCamera} style={{ color: isCameraOff ? "grey" : "black" }}>
+                     {isCameraOff ? <VideocamOffIcon /> : <VideocamIcon />}
+                  </IconButton>
+               </div>
+
                <div style={{ width: "100%", textAlign: "center" }}>
                   <Button
                      variant="contained"
