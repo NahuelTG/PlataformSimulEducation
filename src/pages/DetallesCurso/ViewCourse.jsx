@@ -28,7 +28,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import ArticleIcon from "@mui/icons-material/Article";
 import LCGMomponent from "../Generadores/GeneradorCM";
-import LCGComponent from "../Generadores/GeneradorCL";
+import LCGComponent from "../Generadores/GeneradoCongruencialMixto";
 import CompositionSamplingComponent from "../Generadores/GeneradorComposicion";
 import RejectionSamplingComponent from "../Generadores/GeneradorRechazo";
 import InverseTransformComponent from "../Generadores/GeneradorTransInversa";
@@ -239,14 +239,14 @@ const ViewCourse = () => {
                                                    handleResourceClick({
                                                       id: "comp1",
                                                       type: "component",
-                                                      title: "Generador Congruencial Lineal",
+                                                      title: "Generador Congruencial Mixto",
                                                    })
                                                 }
                                              >
                                                 <ListItemIcon>
                                                    <FaChartBar style={{ color: "green", fontSize: "21px" }} />
                                                 </ListItemIcon>
-                                                <ListItemText primary="Generador Congruencial Lineal" />
+                                                <ListItemText primary="Generador Congruencial Mixto" />
                                              </ListItem>
                                              <ListItem
                                                 button
