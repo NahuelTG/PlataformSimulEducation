@@ -21,6 +21,7 @@ import GroupTasksBoard from "./pages/Tareas/GroupTasksBoard";
 import TaskDetails from "./pages/Tareas/TaskDetails";
 import Inicio from "./pages/Inicio";
 import Mensajes from "./pages/Mensajeria/Mensajes";
+import ForoEstudiante from "./pages/Navbar/ForoEstudiante";
 
 function PrivateAdminRoute({ element }) {
    const { roleC } = useContext(UserContext);
@@ -68,6 +69,7 @@ function UserRoutes() {
             <Route path="/viewcourse/:courseId" element={<ViewCourse />} />
             <Route path="/PrueCod" element={<ProvarCodigo />} />
             <Route path="/VideoCall" element={<VideoCall />} />
+            <Route path="/ForoEstudiante" element={<ForoEstudiante />} />
          </Routes>
       </div>
    );
