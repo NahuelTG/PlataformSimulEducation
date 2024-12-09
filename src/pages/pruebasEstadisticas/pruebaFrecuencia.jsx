@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { Line } from "react-chartjs-2";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import "./PruebaFrecuencia.css"; // Archivo CSS personalizado
+import "./PruebaFrecuencia.css";
 
-// Funciones para la Prueba de Frecuencias
 function calcularFrecuenciasEsperadas(n, k) {
    const frecuenciaEsperada = n / k;
    return Array(k).fill(frecuenciaEsperada);
@@ -35,19 +34,88 @@ function PruebaFrecuencia() {
    const [k, setK] = useState(5);
    const [nivelSignificancia, setNivelSignificancia] = useState(0.05);
    const [resultados, setResultados] = useState(null);
-   const [isModalOpen, setIsModalOpen] = useState(false);
    const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
 
    const [cod] = useState(`
-// Código Java para Prueba de Frecuencias
 import org.apache.commons.math3.distribution.ChiSquaredDistribution;
+import java.util.Scanner;
 
-public class PruebaFrecuencia {
+public class PruebaUniformidadFrecuencias {
+
     public static void main(String[] args) {
-        // Implementación de los cálculos
+        try (Scanner sc = new Scanner(System.in)) {
+            System.out.print("Ingrese el tamanio de la muestra (n): ");
+            int n = sc.nextInt();
+            double[] muestra = obtenerMuestraDesdeUsuario(sc, n);
+
+            System.out.print("Ingrese el valor de nivel de significancia: ");
+            double nivelSignificancia = sc.nextDouble();
+
+            System.out.print("Ingrese el valor de K (numero de intervalos): ");
+            int k = sc.nextInt();
+
+            // Calcular frecuencias esperadas y observadas
+            double[] esperados = calcularFrecuenciasEsperadas(n, k);
+            int[] observados = calcularFrecuenciasObservadas(muestra, k);
+
+            double estadistico = calcularEstadisticoFrecuencias(observados, esperados);
+            double valorCritico = obtenerValorCriticoChiCuadrado(nivelSignificancia, k - 1);
+            System.out.printf("Valor estadistico: %.4f%n", estadistico);
+            System.out.printf("Valor critico (Chi-Cuadrado): %.4f%n", valorCritico);
+
+            if (estadistico < valorCritico) {
+                System.out.println("La muestra sigue una distribucion uniforme.");
+            } else {
+                System.out.println("La muestra NO sigue una distribucion uniforme.");
+            }
+        }
+    }
+
+    private static double[] obtenerMuestraDesdeUsuario(Scanner sc, int n) {
+        double[] muestra = new double[n];
+        System.out.println("Ingrese los valores de la muestra uno por uno:");
+        for (int i = 0; i < n; i++) {
+            muestra[i] = sc.nextDouble();
+        }
+        return muestra;
+    }
+
+    private static double[] calcularFrecuenciasEsperadas(int n, int k) {
+        double frecuenciaEsperada = (double) n / k;
+        double[] esperados = new double[k];
+        for (int i = 0; i < k; i++) {
+            esperados[i] = frecuenciaEsperada;
+        }
+        return esperados;
+    }
+
+    private static int[] calcularFrecuenciasObservadas(double[] muestra, int k) {
+        int[] observados = new int[k];
+        double intervalo = 1.0 / k;
+
+        for (double valor : muestra) {
+            int indice = Math.min((int) (valor / intervalo), k - 1);
+            observados[indice]++;
+        }
+        return observados;
+    }
+
+    private static double calcularEstadisticoFrecuencias(int[] observados, double[] esperados) {
+        double estadistico = 0;
+        for (int i = 0; i < observados.length; i++) {
+            double diferencia = observados[i] - esperados[i];
+            estadistico += Math.pow(diferencia, 2) / esperados[i];
+        }
+        return estadistico;
+    }
+
+    private static double obtenerValorCriticoChiCuadrado(double alpha, int gradosLibertad) {
+        ChiSquaredDistribution chiSquaredDist = new ChiSquaredDistribution(gradosLibertad);
+        return chiSquaredDist.inverseCumulativeProbability(1 - alpha);
     }
 }
-  `);
+
+   `);
 
    const handleAgregarValor = () => {
       const valor = parseFloat(nuevoValor);
@@ -79,8 +147,6 @@ public class PruebaFrecuencia {
          valorCritico,
          esUniforme: estadistico < valorCritico,
       });
-
-      setIsModalOpen(true);
    };
 
    const data = resultados
@@ -107,25 +173,21 @@ public class PruebaFrecuencia {
 
    return (
       <div className="prueba-frecuencia-container">
-         <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-            <Box className="modal-box">
-               <h3>Resultados de la Prueba</h3>
-               <p>
-                  Estadístico: <b>{resultados?.estadistico.toFixed(4)}</b>
-               </p>
-               <p>
-                  Valor Crítico: <b>{resultados?.valorCritico.toFixed(4)}</b>
-               </p>
-               <p>Resultado: {resultados?.esUniforme ? "Distribución Uniforme Verificada" : "Distribución No Uniforme"}</p>
-            </Box>
-         </Modal>
+         {/* Gráfica siempre visible */}
+         <div className="chart-container">
+            <h4>Gráfica de Frecuencias</h4>
+            {data ? <Line data={data} /> : <p>Aún no hay datos para la gráfica.</p>}
+         </div>
+
+         {/* Modal para el código */}
          <Modal open={isCodeModalOpen} onClose={() => setIsCodeModalOpen(false)}>
-            <Box className="modal-box">
+            <Box className="modal-box code-box">
                <h3>Código Java para Prueba de Frecuencias:</h3>
                <pre>{cod}</pre>
             </Box>
          </Modal>
-         <h3>Prueba de Frecuencias</h3>
+
+         {/* Controles */}
          <div className="inputs-container">
             <label>
                Nivel de Significancia (α):
@@ -154,12 +216,6 @@ public class PruebaFrecuencia {
             <h4>Muestra:</h4>
             <p>{muestra.length > 0 ? muestra.join(", ") : "No se han agregado valores."}</p>
          </div>
-         {data && (
-            <div className="chart-container">
-               <h4>Gráfica de Frecuencias</h4>
-               <Line data={data} />
-            </div>
-         )}
       </div>
    );
 }
