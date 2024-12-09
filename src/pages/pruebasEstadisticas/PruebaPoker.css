@@ -6,10 +6,6 @@
    font-family: Arial, sans-serif;
 }
 
-.inputs-container {
-   margin-bottom: 20px;
-}
-
 .inputs-container label {
    display: block;
    margin-bottom: 10px;
@@ -20,12 +16,6 @@
    width: 100%;
    margin-top: 5px;
    box-sizing: border-box;
-}
-
-.button-group {
-   display: flex;
-   gap: 10px;
-   margin-top: 20px;
 }
 
 button {
@@ -40,12 +30,34 @@ button:hover {
    background-color: #333;
 }
 
+.prueba-poker-container {
+   padding: 20px;
+}
+
 .resultados-container {
    margin-bottom: 20px;
    padding: 15px;
    border: 1px solid #ddd;
    border-radius: 8px;
    background-color: #f9f9f9;
+}
+
+.inputs-container {
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
+}
+
+.muestra-input {
+   display: flex;
+   flex-direction: row;
+   align-items: center;
+   gap: 10px;
+}
+
+.button-group {
+   display: flex;
+   gap: 10px;
 }
 
 .modal-box {

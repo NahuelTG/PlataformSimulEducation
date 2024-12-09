@@ -254,16 +254,19 @@ class Probabilidad:
 
          {/* Controles */}
          <div className="inputs-container">
-            <label>
-               Agregar número a la muestra:
-               <input type="number" value={nuevoValor} onChange={(e) => setNuevoValor(e.target.value)} />
-            </label>
+            <div className="muestra-input">
+               <label>
+                  Agregar número a la muestra:
+                  <input type="number" value={nuevoValor} onChange={(e) => setNuevoValor(e.target.value)} />
+               </label>
+               <button onClick={handleAgregarValor}>Agregar</button>
+            </div>
             <div className="button-group">
-               <button onClick={handleAgregarValor}>Agregar Valor</button>
                <button onClick={handleCalcular}>Calcular</button>
                <button onClick={() => setIsCodeModalOpen(true)}>Ver Código Python</button>
             </div>
          </div>
+
          <div className="muestra-container">
             <h4>Muestra:</h4>
             <p>{muestra.length > 0 ? muestra.join(", ") : "No se han agregado valores."}</p>
