@@ -27,7 +27,7 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import ArticleIcon from "@mui/icons-material/Article";
-import LCGMomponent from "../Generadores/GeneradorCM";
+import LCGMomponent from "../Generadores/GeneradorCongruencialMultiplicativo";
 import LCGComponent from "../Generadores/GeneradoCongruencialMixto";
 import CompositionSamplingComponent from "../Generadores/GeneradorComposicion";
 import RejectionSamplingComponent from "../Generadores/GeneradorRechazo";
