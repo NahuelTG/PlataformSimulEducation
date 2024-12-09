@@ -27,7 +27,10 @@ const VideoCall = () => {
    const [users, setUsers] = useState([]);
    const [isMuted, setIsMuted] = useState(false);
    const [isCameraOff, setIsCameraOff] = useState(false);
+   const [incomingCall, setIncomingCall] = useState(null);
+   const [callerName, setCallerName] = useState("");
    const [notificationOpen, setNotificationOpen] = useState(false);
+   const [rejectionNotification, setRejectionNotification] = useState(false);
    const localVideoRef = useRef(null);
    const remoteVideoRef = useRef(null);
    const { currentUser } = useContext(UserContext);
@@ -60,6 +63,7 @@ const VideoCall = () => {
                usersList.push({
                   label,
                   value: doc.id,
+                  username: user.username,
                   role: user.role,
                });
             }
@@ -76,24 +80,13 @@ const VideoCall = () => {
       setPeer(newPeer);
 
       newPeer.on("call", (call) => {
+         // Find the caller's name
+         const caller = users.find((user) => user.value === call.peer);
+         const name = caller ? caller.username : "Desconocido";
+
+         setIncomingCall(call);
+         setCallerName(name);
          setNotificationOpen(true);
-         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-            setLocalStream(stream);
-            localVideoRef.current.srcObject = stream;
-            call.answer(stream);
-            call.on("stream", (remoteStream) => {
-               setRemoteStream(remoteStream);
-               remoteVideoRef.current.srcObject = remoteStream;
-            });
-
-            call.on("close", () => {
-               window.location.reload();
-            });
-
-            call.on("error", () => {
-               window.location.reload();
-            });
-         });
       });
 
       return () => {
@@ -102,7 +95,7 @@ const VideoCall = () => {
          }
          newPeer.destroy();
       };
-   }, [uidf]);
+   }, [uidf, users, localStream]);
 
    useEffect(() => {
       if (remoteStream) {
@@ -156,6 +149,33 @@ const VideoCall = () => {
          peer.destroy();
          setPeer(new Peer(uidf));
          window.location.reload();
+      }
+   };
+
+   const acceptCall = () => {
+      if (incomingCall) {
+         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+            setLocalStream(stream);
+            localVideoRef.current.srcObject = stream;
+            incomingCall.answer(stream);
+
+            incomingCall.on("stream", (remoteStream) => {
+               setRemoteStream(remoteStream);
+               remoteVideoRef.current.srcObject = remoteStream;
+            });
+
+            setNotificationOpen(false);
+            setIncomingCall(null);
+         });
+      }
+   };
+
+   const rejectCall = () => {
+      if (incomingCall) {
+         incomingCall.close();
+         setNotificationOpen(false);
+         setIncomingCall(null);
+         setRejectionNotification(true); // Show rejection notification
       }
    };
 
@@ -219,11 +239,31 @@ const VideoCall = () => {
          <StyledButton variant="contained" onClick={endCall} startIcon={<CallEndIcon />}>
             Colgar llamada
          </StyledButton>
-         <Snackbar open={notificationOpen} autoHideDuration={3000} onClose={() => setNotificationOpen(false)}>
-            <Alert onClose={() => setNotificationOpen(false)} severity="info">
-               Tienes una llamada entrante.
+
+         {/* Incoming call notification */}
+         <Snackbar open={notificationOpen} onClose={() => setNotificationOpen(false)}>
+            <Alert
+               action={
+                  <>
+                     <Button color="inherit" size="small" onClick={acceptCall}>
+                        Aceptar
+                     </Button>
+                     <Button color="inherit" size="small" onClick={rejectCall}>
+                        Rechazar
+                     </Button>
+                  </>
+               }
+               severity="info"
+            >
+               {callerName} te está llamando.
             </Alert>
          </Snackbar>
+
+         {/* Call rejection notification */}
+         <Snackbar open={rejectionNotification} autoHideDuration={3000} onClose={() => setRejectionNotification(false)}>
+            <Alert severity="error">Has rechazado la llamada.</Alert>
+         </Snackbar>
+
          <Typography variant="body1" style={{ marginTop: 20 }}>
             Ambos usuarios deben estar en la ventana de VideoCall para que la funcionalidad funcione. Selecciona un usuario y haz clic en
             "Iniciar llamada".
