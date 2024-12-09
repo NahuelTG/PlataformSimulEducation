@@ -79,7 +79,7 @@ const GeneradorCongruencialMultiplicativo = () => {
     labels: results.map((r) => r.iteration),
     datasets: [
       {
-        label: 'Valores Un',
+        label: 'Secuencia de nuemros generados',
         data: results.map((r) => r.un),
         borderColor: 'rgb(75, 192, 192)',
         backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -128,7 +128,7 @@ const GeneradorCongruencialMultiplicativo = () => {
               />
             </label>
             <button className="button" onClick={handleGenerate}>
-              Generar
+              Generar nuemero aleatorios
             </button>
           </div>
         </div>
