@@ -1,0 +1,213 @@
+.foroContainer {
+    display: flex;
+    flex-direction: row;
+    height: 83vh;
+    width: 100%;
+    background-color: #f0f0f0; /* Fondo general de la aplicación */
+}
+
+.userList {
+    width: 25%;
+    height: 81vh; /* Ajuste de altura reducido */
+    overflow-y: auto;
+    border-right: 2px solid white; /* Línea divisoria */
+    padding: 10px;
+    background-color: #ffffff; /* Fondo blanco */
+    color: #333333; /* Color del texto */
+}
+
+/* Scroll delgado para la lista de usuarios */
+.userList::-webkit-scrollbar {
+    width: 6px; /* Ancho del scroll vertical */
+}
+
+.userList::-webkit-scrollbar-thumb {
+    background-color: #888; /* Color del "thumb" */
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+.userList::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Cambio de color al pasar el mouse */
+}
+
+.userList::-webkit-scrollbar-track {
+    background-color: #f0f0f0; /* Fondo de la pista del scroll */
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+.contact {
+    padding: 10px;
+    background-color: #ffffff; /* Cambio de color de fondo a blanco */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.chatWindow {
+    display: flex;
+    flex-direction: column;
+    width: 75%; /* Tamaño fijo del chat */
+    height: 83vh; /* Ajuste de la altura para que no ocupe toda la pantalla */
+    background-color: #ffffff; /* Fondo del chat */
+    border-left: 2px solid #d0d0d0; /* Línea divisoria */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Scroll delgado para la ventana de chat */
+.chatWindow::-webkit-scrollbar {
+    width: 6px; /* Ancho del scroll vertical */
+}
+
+.chatWindow::-webkit-scrollbar-thumb {
+    background-color: #888; /* Color del "thumb" */
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+.chatWindow::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Cambio de color al pasar el mouse */
+}
+
+.chatWindow::-webkit-scrollbar-track {
+    background-color: #f0f0f0; /* Fondo de la pista del scroll */
+}
+
+.chatHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centra el contenido */
+    background-color: #ffffff; /* Fondo blanco */
+    color: #333333; /* Color de texto de la cabecera */
+    padding: 10px 15px;
+    border-bottom: 2px solid #d0d0d0; /* Línea divisoria inferior */
+    position: relative; /* Permite posicionar el botón de retroceso */
+}
+
+.backButton {
+    position: absolute; /* Posición absoluta para colocarlo en la esquina izquierda */
+    left: 15px; /* Ajusta la distancia del borde izquierdo */
+    top: 50%; /* Centrado vertical */
+    transform: translateY(-50%); /* Ajusta el posicionamiento vertical */
+    background: none;
+    border: none;
+    color: #333333;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.chatHeader h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.messages {
+    flex-grow: 1;
+    padding: 15px;
+    background-color: #f7f7f7; /* Fondo de los mensajes */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto; /* Solo permite el desplazamiento vertical */
+    max-height: calc(100% - 60px); /* Ajusta la altura para tener en cuenta el encabezado y la barra de entrada */
+    border: 1px solid #d0d0d0; /* Borde alrededor del contenedor de los mensajes */
+    border-radius: 5px; /* Esquinas redondeadas */
+}
+
+/* Mensaje de contacto (alinea a la izquierda o derecha dependiendo del contexto) */
+.contactMessage {
+    padding: 10px;
+    border-radius: 10px;
+    display: inline-block;
+    position: relative;
+    word-wrap: break-word; /* Permite el ajuste de palabras largas */
+    white-space: normal; /* Permite que el texto se divida en múltiples líneas */
+    background-color: #d5d5d5; /* Fondo de mensaje de contacto */
+    color: #333333; /* Color de texto de mensaje de contacto */
+    text-align: left; /* Asegura que el texto esté alineado a la izquierda */
+    align-self: flex-start; /* Alinea a la izquierda por defecto */
+    max-width: 70%; /* Limita el ancho máximo para evitar que se extienda demasiado */
+}
+
+/* Mensaje propio (alinea a la derecha) */
+.myMessage {
+    padding: 10px;
+    border-radius: 10px;
+    display: inline-block;
+    position: relative;
+    word-wrap: break-word; /* Permite el ajuste de palabras largas */
+    white-space: normal; /* Permite que el texto se divida en múltiples líneas */
+    background-color: #333333; /* Fondo de mensaje propio */
+    color: #ffffff; /* Color de texto de mensaje propio */
+    align-self: flex-end; /* Alinea a la derecha */
+    max-width: 70%; /* Limita el ancho máximo para evitar que se extienda demasiado */
+}
+
+.messageTime {
+    display: block;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    text-align: right;
+    color: #ffffff; /* Cambiado a blanco */
+}
+
+/* Hora de los mensajes enviados */
+.myMessage .messageTime {
+    color: #ffffff; /* Color blanco para la hora del mensaje enviado */
+}
+
+/* Hora de los mensajes recibidos */
+.contactMessage .messageTime {
+    color: #777777; /* Color gris para la hora del mensaje recibido */
+}
+
+.inputContainer {
+    display: flex;
+    align-items: center;
+    background-color: #ffffff; /* Fondo blanco */
+    border: 1px solid #d0d0d0; /* Borde alrededor */
+    padding: 10px;
+    border-top: 2px solid #d0d0d0; /* Línea divisoria superior */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.inputContainer input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #d0d0d0; /* Borde del input */
+    border-radius: 15px; /* Bordes redondeados */
+    outline: none;
+    font-size: 1rem;
+    color: #333333;
+    background-color: transparent; /* Sin fondo */
+}
+
+.inputContainer button {
+    background-color: #000000; /* Fondo negro */
+    border: none;
+    border-radius: 5px; /* Bordes redondeados */
+    padding: 10px; /* Aumenta el espaciado para que el botón sea más grande */
+    margin-left: 5px;
+    cursor: pointer;
+    color: #ffffff; /* Color del icono */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem; /* Ajusta el tamaño del ícono */
+}
+
+.inputContainer button:hover {
+    background-color: #444444; /* Hover del botón de enviar */
+}
+
+.welcomeMessage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    left: 70%;
+    font-size: 1.2rem;
+    color: #333333; /* Color del mensaje de bienvenida */
+}

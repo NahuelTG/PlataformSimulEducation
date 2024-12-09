@@ -1,0 +1,174 @@
+/* Contenedor general de la página */
+.page-container {
+    display: flex;
+    flex-direction: row;
+    margin-left: 300px;
+    background: linear-gradient(130deg, #d6d6d6, #bdbdbd); 
+    height: 100vh;
+    overflow-x: hidden; 
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Barra lateral de usuarios */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-right: 1px solid #ddd;
+    padding: 20px;
+    box-shadow: 0px 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px; 
+    flex-shrink: 0; 
+}
+
+/* Contenedor de chat */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    flex-grow: 1; 
+    height: calc(100vh - 40px); 
+    overflow-y: auto; 
+    margin-left: 20px; /* Espacio entre la barra lateral y el área de chat */
+}
+
+/* Barra de navegación (navbar) */
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #bdbdbd;
+    color: #fff;
+    padding: 10px 20px;
+    width: 100%; 
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo de las pestañas */
+.tabs {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.tab-active {
+    border-bottom: 2px solid black; 
+    color: black;
+    font-weight: bold;
+}
+
+.tabs button {
+    background: none;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    color: black;
+    transition: color 0.3s;
+}
+
+.tabs button:hover {
+    color: black; 
+}
+
+/* Lista de mensajes */
+.messages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: calc(100% - 80px); 
+    overflow-y: auto;
+    overflow-x: hidden; 
+    padding: 10px;
+    border: 1px solid #ddd; 
+    border-radius: 15px; 
+    background-color: #f4f4f4;
+}
+
+.message {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    display: inline-block;
+    max-width: 80%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s, transform 0.3s;
+    word-wrap: break-word;
+    word-break: break-word; 
+}
+
+.message.sent {
+    background-color: black; /* Negro */
+    color: #fff;
+    align-self: flex-end;
+    transform: translateX(5px);
+}
+
+.message.received {
+    background-color: #bdbdbd; 
+    color: black;
+    transform: translateX(-5px);
+}
+
+.message:hover {
+    transform: scale(1.02);
+}
+
+.timestamp {
+    display: block;
+    font-size: 0.75rem;
+    margin-top: 5px;
+}
+
+.timestamp.sent {
+    color: #ffffff; 
+}
+
+.timestamp.received {
+    color: black; 
+}
+
+/* Formulario de entrada de mensaje */
+.message-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 0;
+    position: relative;
+    padding: 10px 0;
+    flex-shrink: 0; 
+}
+
+.message-input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    font-size: 16px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.message-input:focus {
+    border-color: black; 
+    box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+.message-form button {
+    background-color: black;
+    border: none;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.message-form button:hover {
+    background-color: #444; 
+    transform: translateY(-2px);
+}
