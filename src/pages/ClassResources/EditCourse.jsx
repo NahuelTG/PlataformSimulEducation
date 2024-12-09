@@ -457,6 +457,56 @@ const EditCourse = () => {
                </Card>
             ))}
          </div>
+         <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+            <DialogTitle>{"Eliminar Recurso"}</DialogTitle>
+            <DialogContent>
+               <DialogContentText>¿Estás seguro de que deseas eliminar este recurso?</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+               <Button onClick={() => setOpenDialog(false)} color="primary">
+                  Cancelar
+               </Button>
+               <Button onClick={confirmDeleteFile} color="primary" autoFocus>
+                  Eliminar
+               </Button>
+            </DialogActions>
+         </Dialog>
+
+         <Dialog open={openEditDialog} onClose={() => setOpenEditDialog(false)}>
+            <DialogTitle>{"Editar Recurso"}</DialogTitle>
+            <DialogContent>
+               <DialogContentText>Modifica los campos a continuación para editar el recurso.</DialogContentText>
+               <TextField margin="dense" label="Título" name="title" value={editData.title} onChange={handleEditInputChange} fullWidth />
+               {fileToEdit && fileToEdit.file.type?.includes("pdf") && (
+                  <TextField
+                     margin="dense"
+                     label="Descripción"
+                     name="description"
+                     value={editData.description}
+                     onChange={handleEditInputChange}
+                     fullWidth
+                     multiline
+                     rows={4}
+                  />
+               )}
+               <TextField
+                  margin="dense"
+                  label="Posición"
+                  name="position"
+                  value={editData.position}
+                  onChange={handleEditInputChange}
+                  fullWidth
+               />
+            </DialogContent>
+            <DialogActions>
+               <button className={styles.buttonGuardar} onClick={() => setOpenEditDialog(false)}>
+                  Cancelar
+               </button>
+               <button className={styles.buttonCancelar} onClick={confirmEditFile}>
+                  Guardar
+               </button>
+            </DialogActions>
+         </Dialog>
       </Container>
    );
 };
