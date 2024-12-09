@@ -40,11 +40,29 @@ button:hover {
    background-color: #333;
 }
 
+.resultados-container {
+   margin-bottom: 20px;
+   padding: 15px;
+   border: 1px solid #ddd;
+   border-radius: 8px;
+   background-color: #f9f9f9;
+}
+
 .modal-box {
    background: white;
-   color: black;
    padding: 20px;
-   margin: auto;
    max-width: 500px;
-   text-align: center;
+   margin: auto;
+   border-radius: 8px;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.code-box {
+   max-height: 300px; /* Altura máxima para scroll vertical */
+   max-width: 100%; /* Ajusta el ancho al contenedor */
+   overflow-x: auto; /* Scroll horizontal */
+   overflow-y: auto; /* Scroll vertical */
+   white-space: pre; /* Mantiene el formato del código */
+   border: 1px solid #ddd;
+   background-color: #f9f9f9;
 }

@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import "./PruebaPoker.css"; // Archivo CSS personalizado
+import "./PruebaPoker.css";
 
-// Diccionario base para los tipos de manos
 const DICCIONARIO_BASE = {
    TODOS_DIFERENTES: 0,
    PAR: 0,
@@ -14,7 +13,6 @@ const DICCIONARIO_BASE = {
    QUINTILLA: 0,
 };
 
-// Probabilidades predefinidas
 const PROBABILIDADES = {
    TODOS_DIFERENTES: 0.3024,
    PAR: 0.504,
@@ -25,7 +23,6 @@ const PROBABILIDADES = {
    QUINTILLA: 0.0001,
 };
 
-// Función para calcular la frecuencia esperada
 function calcularFrecuenciaEsperada(probabilidades, tamano) {
    const frecuenciasEsperadas = { ...DICCIONARIO_BASE };
    Object.keys(probabilidades).forEach((tipo) => {
@@ -34,7 +31,6 @@ function calcularFrecuenciaEsperada(probabilidades, tamano) {
    return frecuenciasEsperadas;
 }
 
-// Función para calcular el estadístico Chi-Cuadrado
 function calcularChiCuadrado(frecuenciasEsperadas, frecuenciasObservadas) {
    return Object.keys(frecuenciasEsperadas).reduce((chiCuadrado, tipo) => {
       const esperada = frecuenciasEsperadas[tipo];
@@ -47,12 +43,10 @@ function PruebaPoker() {
    const [muestra, setMuestra] = useState([]);
    const [nuevoValor, setNuevoValor] = useState("");
    const [resultados, setResultados] = useState(null);
-   const [isModalOpen, setIsModalOpen] = useState(false);
    const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
 
    const [cod] = useState(`
-# Código Python para Prueba de Póker
-
+// Código Python para Prueba de Póker
 DICCIONARIO_BASE = {
     "TODOS_DIFERENTES": 0,
     "PAR": 0,
@@ -62,9 +56,8 @@ DICCIONARIO_BASE = {
     "POKER": 0,
     "QUINTILLA": 0
 }
-
 # Implementación de las funciones
-  `);
+   `);
 
    const handleAgregarValor = () => {
       const valor = parseFloat(nuevoValor);
@@ -95,8 +88,6 @@ DICCIONARIO_BASE = {
          frecuenciasEsperadas,
          estadistico,
       });
-
-      setIsModalOpen(true);
    };
 
    const determinarMano = (numero) => {
@@ -119,25 +110,33 @@ DICCIONARIO_BASE = {
 
    return (
       <div className="prueba-poker-container">
-         <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-            <Box className="modal-box">
-               <h3>Resultados de la Prueba</h3>
-               <p>
-                  Estadístico Chi-Cuadrado: <b>{resultados?.estadistico.toFixed(4)}</b>
-               </p>
-               <p>Frecuencias Observadas:</p>
-               <pre>{JSON.stringify(resultados?.frecuenciasObservadas, null, 2)}</pre>
-               <p>Frecuencias Esperadas:</p>
-               <pre>{JSON.stringify(resultados?.frecuenciasEsperadas, null, 2)}</pre>
-            </Box>
-         </Modal>
+         {/* Resultados siempre visibles */}
+         <div className="resultados-container">
+            <h3>Resultados de la Prueba</h3>
+            {resultados ? (
+               <>
+                  <p>
+                     Estadístico Chi-Cuadrado: <b>{resultados.estadistico.toFixed(4)}</b>
+                  </p>
+                  <p>Frecuencias Observadas:</p>
+                  <pre>{JSON.stringify(resultados.frecuenciasObservadas, null, 2)}</pre>
+                  <p>Frecuencias Esperadas:</p>
+                  <pre>{JSON.stringify(resultados.frecuenciasEsperadas, null, 2)}</pre>
+               </>
+            ) : (
+               <p>Aún no se han calculado resultados.</p>
+            )}
+         </div>
+
+         {/* Modal para el código */}
          <Modal open={isCodeModalOpen} onClose={() => setIsCodeModalOpen(false)}>
-            <Box className="modal-box">
+            <Box className="modal-box code-box">
                <h3>Código Python para Prueba de Póker:</h3>
                <pre>{cod}</pre>
             </Box>
          </Modal>
-         <h3>Prueba de Póker</h3>
+
+         {/* Controles */}
          <div className="inputs-container">
             <label>
                Agregar número a la muestra:
