@@ -1,0 +1,189 @@
+.lcg-container {
+    font-family: Arial, sans-serif;
+    width: 100%; /* Asegura que el contenedor ocupe todo el ancho disponible */
+    max-width: 1800px; /* Limita el ancho máximo del contenedor */
+    margin: 10px auto; /* Centra el contenedor en la pantalla */
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Evita que los elementos internos se desborden */
+}
+
+.top-section {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Tres columnas iguales */
+    gap: 20px; /* Espacio entre los contenedores */
+    margin-bottom: 20px; /* Espacio en la parte inferior de la sección */
+    width: 100%; /* Asegura que la sección ocupe todo el ancho disponible */
+}
+
+.input-section-container,
+.results-section-container,
+.chart-section {
+    width: 100%; /* Asegura que todos tengan el mismo ancho */
+    min-width: 400px; /* Establece un ancho mínimo más amplio */
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Espacio entre elementos dentro de cada sección */
+    margin: 0 auto; /* Centra cada contenedor dentro de la cuadrícula */
+    box-sizing: border-box; /* Asegura que el padding no aumente el ancho total */
+    overflow: hidden; /* Evita el desbordamiento interno */
+}
+
+.input-section {
+    display: grid;
+    grid-template-columns: 1fr; /* Inputs en una sola columna */
+    gap: 15px;
+}
+
+.input-section label {
+    font-weight: bold;
+    display: block; 
+    margin-bottom: 5px;
+    text-align: left; 
+}
+
+.input-section input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: white; /* Texto blanco */
+    background-color: #000; /* Botón negro */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 10px;
+    transition: background-color 0.3s; /* Transición suave para el cambio de color */
+}
+
+/* Efecto hover */
+.button:hover {
+    background-color: black; /* Cambia el color de fondo al pasar el mouse */
+    color: white; /* Mantiene el texto blanco */
+}
+
+.results-section-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.results-section-container th,
+.results-section-container td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.results-section-container th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.results-section-container tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.results-section-container tr:hover {
+    background-color: #f1f1f1;
+}
+
+.chart-section {
+    display: flex;
+    flex-direction: column; /* Título "Gráfico" en una columna */
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px; /* Menor espacio en la parte superior */
+    width: 100%; /* Asegura que la sección ocupe todo el ancho disponible */
+}
+
+.chart-section h2 {
+    margin-bottom: 10px; /* Espacio entre el título y el canvas */
+}
+
+.chart-section canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+p {
+    font-size: 18px; /* Ajusta el tamaño de la fuente según lo que necesites */
+    line-height: 1.5; /* Espacio entre líneas para mejorar la legibilidad */
+}
+
+/* Media queries para dispositivos medianos y pequeños */
+@media (max-width: 1024px) {
+    .top-section {
+        grid-template-columns: 1fr 1fr; /* Dos columnas en lugar de tres */
+        gap: 15px; /* Reduce el espacio entre elementos */
+    }
+
+    .input-section-container,
+    .results-section-container,
+    .chart-section {
+        min-width: 100%; /* Ocupa todo el ancho de la pantalla */
+        padding: 15px; /* Reduce el padding */
+    }
+
+    .button {
+        font-size: 14px; /* Reduce el tamaño del texto */
+    }
+
+    .results-section-container th,
+    .results-section-container td {
+        padding: 6px; /* Reduce el padding de la tabla */
+    }
+}
+
+/* Media queries para dispositivos móviles */
+@media (max-width: 768px) {
+    .top-section {
+        grid-template-columns: 1fr; /* Una sola columna */
+        gap: 15px; /* Reduce el espacio entre elementos */
+    }
+
+    .input-section-container,
+    .results-section-container,
+    .chart-section {
+        padding: 10px; /* Reduce aún más el padding */
+    }
+
+    .button {
+        font-size: 12px; /* Reduce el tamaño del texto */
+    }
+
+    .input-section input {
+        padding: 6px; /* Reduce el padding de los inputs */
+    }
+}
+
+/* Media queries para pantallas más pequeñas */
+@media (max-width: 480px) {
+    .input-section-container,
+    .results-section-container,
+    .chart-section {
+        padding: 8px; /* Aún más reducción del padding */
+    }
+
+    .button {
+        font-size: 10px; /* Reduce aún más el tamaño del texto */
+    }
+
+    .input-section input {
+        padding: 4px; /* Reduce el padding de los inputs */
+    }
+}
