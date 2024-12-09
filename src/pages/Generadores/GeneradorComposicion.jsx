@@ -251,124 +251,128 @@ class Rextester {
       },
     },
   };
-
   return (
     <div className="lcg-container">
-      <div className="left-container">
-        <div className="chart-container">
-          <h3>Gráfica de Números Generados</h3>
-          <Line data={data} options={options} />
-        </div>
-        <div className="code-section">
-          <button onClick={openModal}><h4>Ver Código Java del Método de Composición</h4></button>
-          <Modal isOpen={isModalOpen} onClose={closeModal}>
-            <h3>Código Java para el Método de Composición:</h3>
-            <pre>{cod}</pre>
-          </Modal>
-        </div>
+      {/* Botones principales y secundarios en una fila */}
+      <div className="buttons">
+        <button onClick={handleGenerate}>Generar Números</button>
+        <button onClick={handleReset}>Resetear Generador</button>
+        <button onClick={openModal}>Ver Código Java</button>
+        <button onClick={openNumbersModal} disabled={numbers.length === 0}>
+          Mostrar Números Generados
+        </button>
       </div>
-      <div className="right-container">
-        <div className="inputs-container">
-          <h3>Valores</h3>
-          <label>
-            Media 1 (µ1):
-            <input
-              type="number"
-              value={mean1}
-              onChange={(e) => setMean1(parseFloat(e.target.value))}
-              onBlur={handleBlur(setMean1)}
-              step="0.1"
-            />
-          </label>
-          <br/>
-          <label>
-            Desviación Estándar 1 (σ1):
-            <input
-              type="number"
-              value={stdDev1}
-              onChange={(e) => setStdDev1(parseFloat(e.target.value))}
-              onBlur={handleBlur(setStdDev1)}
-              step="0.1"
-              min="0.1"
-            />
-          </label>
-          <br/>
-          <label>
-            Media 2 (µ2):
-            <input
-              type="number"
-              value={mean2}
-              onChange={(e) => setMean2(parseFloat(e.target.value))}
-              onBlur={handleBlur(setMean2)}
-              step="0.1"
-            />
-          </label>
-          <br/>
-          <label>
-            Desviación Estándar 2 (σ2):
-            <input
-              type="number"
-              value={stdDev2}
-              onChange={(e) => setStdDev2(parseFloat(e.target.value))}
-              onBlur={handleBlur(setStdDev2)}
-              step="0.1"
-              min="0.1"
-            />
-          </label>
-          <br/>
-          <label>
-            Peso 1 (p1):
-            <input
-              type="number"
-              value={weights[0]}
-              onChange={(e) => setWeights([parseFloat(e.target.value), weights[1]])}
-              onBlur={handleBlur((value) => setWeights([value, weights[1]]))}
-              step="0.1"
-              min="0.0"
-              max="1.0"
-              readOnly
-            />
-          </label>
-          <br/>
-          <label>
-            Peso 2 (p2):
-            <input
-              type="number"
-              value={weights[1]}
-              onChange={(e) => setWeights([weights[0], parseFloat(e.target.value)])}
-              onBlur={handleBlur((value) => setWeights([weights[0], value]))}
-              step="0.1"
-              min="0.0"
-              max="1.0"
-              readOnly
-            />
-          </label>
-        </div>
-        <div className="equation">
-          <h3>Ecuación:</h3>
-          <p>{form}</p>
-        </div>
-        <div className="buttons">
-          <button onClick={handleGenerate}>Generar Números</button>
-          <button onClick={handleReset}>Resetear Generador</button>
-          
-        </div>
-        <h3>Lista Números Aleatorios</h3>
-        <div className="buttons">
-        <button onClick={openNumbersModal} disabled={numbers.length === 0}>Mostrar Números Generados</button>
-      
-        </div>
+
+      {/* Gráfica */}
+      <div className="chart-container">
+        <h3>Gráfico de Números Generados</h3>
+        <Line data={data} options={options} />
       </div>
-      <Modal isOpen={isNumbersModalOpen} onClose={closeNumbersModal}>
-        <h3>Números Generados:</h3>
-        <ul>
-          {numbers.map((number, index) => (
-            <li key={index}>{number.toFixed(4)}</li>
-          ))}
-        </ul>
-      </Modal>
+      <div className="equation">
+        <h3>Tabla de valores dados:</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Descripción</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Media 1 (µ1)</td>
+              <td>{mean1}</td>
+            </tr>
+            <tr>
+              <td>Desviación Estándar 1 (σ1)</td>
+              <td>{stdDev1}</td>
+            </tr>
+            <tr>
+              <td>Media 2 (µ2)</td>
+              <td>{mean2}</td>
+            </tr>
+            <tr>
+              <td>Desviación Estándar 2 (σ2)</td>
+              <td>{stdDev2}</td>
+            </tr>
+            <tr>
+              <td>Peso 1</td>
+              <td>{weights[0]}</td>
+            </tr>
+            <tr>
+              <td>Peso 2</td>
+              <td>{weights[1]}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div className="equation">
+        <h3>Ecuación base:</h3>
+        <p>{form}</p>
+      </div> 
+
+      {/* Inputs */}
+      <div className="inputs-container">
+        <h3>Valores</h3>
+        <label>
+          Media 1 (µ1):
+          <input
+            type="number"
+            value={mean1}
+            onChange={(e) => setMean1(parseFloat(e.target.value))}
+            onBlur={handleBlur(setMean1)}
+            step="0.1"
+          />
+        </label>
+        <label>
+          Desviación Estándar 1 (σ1):
+          <input
+            type="number"
+            value={stdDev1}
+            onChange={(e) => setStdDev1(parseFloat(e.target.value))}
+            onBlur={handleBlur(setStdDev1)}
+            step="0.1"
+          />
+        </label>
+        <label>
+          Media 2 (µ2):
+          <input
+            type="number"
+            value={mean2}
+            onChange={(e) => setMean2(parseFloat(e.target.value))}
+            onBlur={handleBlur(setMean2)}
+            step="0.1"
+          />
+        </label>
+        <label>
+          Desviación Estándar 2 (σ2):
+          <input
+            type="number"
+            value={stdDev2}
+            onChange={(e) => setStdDev2(parseFloat(e.target.value))}
+            onBlur={handleBlur(setStdDev2)}
+            step="0.1"
+          />
+        </label>
+      </div>
+  
+
+      <div className="code-section">
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+          <h3>Código Java para el Método de Composición:</h3>
+          <pre>{cod}</pre>
+        </Modal>
+        <Modal isOpen={isNumbersModalOpen} onClose={closeNumbersModal}>
+          <h3>Números Generados:</h3>
+          <ul>
+            {numbers.map((number, index) => (
+              <li key={index}>{number.toFixed(4)}</li>
+            ))}
+          </ul>
+        </Modal>
+      </div>
     </div>
   );
+  
 }
 
 export default CompositionSamplingComponent;
