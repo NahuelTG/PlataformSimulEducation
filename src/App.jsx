@@ -90,12 +90,8 @@ function GestRoutes() {
 function getHomeElement(roleC) {
    switch (roleC) {
       case "admin":
-         return (
-            <div>
-               <Sidebar />
-               <h1>Admin</h1>
-            </div>
-         );
+         return <Navigate to="/Admin/inicio" replace />;
+         
       case "usuario":
          return (
             <div>
