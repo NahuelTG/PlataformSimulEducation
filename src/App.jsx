@@ -18,7 +18,7 @@ import ProvarCodigo from "./pages/PruevaDeCodigoPlano/Pruevadecodigo";
 import SearchResults from "./pages/busqueda/SearchResults";
 import VideoCall from "./pages/videocall/VideoCall";
 import GroupTasksBoard from "./pages/tareas/GroupTasksBoard.jsx";
-import TaskDetails from "./pages/Tareas/TaskDetails";
+import TaskDetails from "./pages/tareas/TaskDetails";
 import Inicio from "./pages/Inicio";
 import Mensajes from "./pages/Mensajeria/Mensajes";
 import ForoEstudiante from "./pages/Navbar/ForoEstudiante";
