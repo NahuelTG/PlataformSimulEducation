@@ -58,28 +58,58 @@ const VideoCall = () => {
    }, [currentUser.uid]);
 
    useEffect(() => {
-      const newPeer = new Peer(uidf);
-      setPeer(newPeer);
+      let newPeer;
 
-      newPeer.on("call", (call) => {
-         setIncomingCall(call);
-         setNotificationOpen(true);
-      });
+      const initializePeer = (id = uidf) => {
+         try {
+            newPeer = new Peer(id, {
+               config: {
+                  iceServers: [
+                     { urls: "stun:stun.l.google.com:19302" }, // Servidor STUN público
+                  ],
+               },
+            });
 
-      newPeer.on("disconnected", () => {
-         console.warn("Peer disconnected. Attempting to reconnect...");
-         newPeer.reconnect();
-      });
+            newPeer.on("open", (peerId) => {
+               console.log("Peer conectado con ID:", peerId);
+            });
 
-      newPeer.on("error", (err) => {
-         console.error("Peer error:", err);
-      });
+            newPeer.on("call", (call) => {
+               setIncomingCall(call);
+               setNotificationOpen(true);
+            });
+
+            newPeer.on("disconnected", () => {
+               console.warn("Peer desconectado. Intentando reconectar...");
+               newPeer.reconnect();
+            });
+
+            newPeer.on("error", (err) => {
+               console.error("Peer error:", err);
+               if (err.type === "unavailable-id") {
+                  console.warn("ID en uso. Generando una nueva ID.");
+                  newPeer.destroy();
+                  initializePeer(); // Genera una nueva ID automáticamente
+               } else if (err.type === "network") {
+                  console.warn("Error de red. Reintentando conexión...");
+               }
+            });
+
+            setPeer(newPeer);
+         } catch (error) {
+            console.error("Error inicializando Peer:", error);
+         }
+      };
+
+      initializePeer();
 
       return () => {
          if (localStream) {
             localStream.getTracks().forEach((track) => track.stop());
          }
-         newPeer.destroy();
+         if (newPeer) {
+            newPeer.destroy();
+         }
       };
    }, [uidf, localStream]);
 
