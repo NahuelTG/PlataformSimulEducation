@@ -1,0 +1,56 @@
+.prueba-frecuencia-container {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   padding: 20px;
+   font-family: Arial, sans-serif;
+}
+
+.inputs-container {
+   margin-bottom: 20px;
+}
+
+.inputs-container label {
+   display: block;
+   margin-bottom: 10px;
+}
+
+.inputs-container input {
+   padding: 8px;
+   width: 100%;
+   margin-top: 5px;
+   box-sizing: border-box;
+}
+
+.button-group {
+   display: flex;
+   gap: 10px;
+   margin-top: 20px;
+}
+
+button {
+   background-color: black;
+   color: white;
+   padding: 10px 20px;
+   border: none;
+   cursor: pointer;
+}
+
+button:hover {
+   background-color: #333;
+}
+
+.modal-box {
+   background: white;
+   color: black;
+   padding: 20px;
+   margin: auto;
+   max-width: 500px;
+   text-align: center;
+}
+
+.chart-container {
+   width: 100%;
+   max-width: 800px;
+   margin-top: 20px;
+}

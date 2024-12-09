@@ -37,6 +37,11 @@ import { SearchContext } from "../../context/SearchContext";
 import TemaIcon from "../../assets/TemaIcon.png";
 import TablonIcon from "../../assets/TablonIcon.png";
 import styles from "./ViewCourse.module.css";
+import PruebaSeries from "../pruebasEstadisticas/PruebaSeries";
+import PruebaPromedios from "../pruebasEstadisticas/pruebaPromedios";
+import PruebaFrecuencia from "../pruebasEstadisticas/pruebaFrecuencia";
+import KolmogorovSmirnov from "../pruebasEstadisticas/kolmogorovSmirnov";
+import PruebaPoker from "../pruebasEstadisticas/PruebaPoker";
 
 const ViewCourse = () => {
    const { courseId } = useParams();
@@ -265,6 +270,85 @@ const ViewCourse = () => {
                                              </ListItem>
                                           </>
                                        )}
+                                       {index === 2 && (
+                                          <>
+                                             <ListItem
+                                                button
+                                                onClick={() =>
+                                                   handleResourceClick({
+                                                      id: "comp7",
+                                                      type: "component",
+                                                      title: "Prueba de Series",
+                                                   })
+                                                }
+                                             >
+                                                <ListItemIcon>
+                                                   <FaChartBar style={{ color: "green", fontSize: "21px" }} />
+                                                </ListItemIcon>
+                                                <ListItemText primary="Prueba de Series" />
+                                             </ListItem>
+                                             <ListItem
+                                                button
+                                                onClick={() =>
+                                                   handleResourceClick({
+                                                      id: "comp8",
+                                                      type: "component",
+                                                      title: "Prueba de Promedios",
+                                                   })
+                                                }
+                                             >
+                                                <ListItemIcon>
+                                                   <FaChartBar style={{ color: "green", fontSize: "21px" }} />
+                                                </ListItemIcon>
+                                                <ListItemText primary="Prueba de Promedios" />
+                                             </ListItem>
+                                             <ListItem
+                                                button
+                                                onClick={() =>
+                                                   handleResourceClick({
+                                                      id: "comp9",
+                                                      type: "component",
+                                                      title: "Prueba de Frecuencias",
+                                                   })
+                                                }
+                                             >
+                                                <ListItemIcon>
+                                                   <FaChartBar style={{ color: "green", fontSize: "21px" }} />
+                                                </ListItemIcon>
+                                                <ListItemText primary="Prueba de Frecuencias" />
+                                             </ListItem>
+                                             <ListItem
+                                                button
+                                                onClick={() =>
+                                                   handleResourceClick({
+                                                      id: "comp10",
+                                                      type: "component",
+                                                      title: "Prueba de KolmogorovSmirnov",
+                                                   })
+                                                }
+                                             >
+                                                <ListItemIcon>
+                                                   <FaChartBar style={{ color: "green", fontSize: "21px" }} />
+                                                </ListItemIcon>
+                                                <ListItemText primary="Prueba de KolmogorovSmirnov" />
+                                             </ListItem>
+                                             <ListItem
+                                                button
+                                                onClick={() =>
+                                                   handleResourceClick({
+                                                      id: "comp11",
+                                                      type: "component",
+                                                      title: "Prueba de Poker",
+                                                   })
+                                                }
+                                             >
+                                                <ListItemIcon>
+                                                   <FaChartBar style={{ color: "green", fontSize: "21px" }} />
+                                                </ListItemIcon>
+                                                <ListItemText primary="Prueba de Poker" />
+                                             </ListItem>
+                                          </>
+                                       )}
                                        {index === 3 && (
                                           <>
                                              <ListItem
@@ -339,6 +423,16 @@ const ViewCourse = () => {
                               <CompositionSamplingComponent />
                            ) : selectedResource.id === "comp6" ? (
                               <GroupBoard />
+                           ) : selectedResource.id === "comp7" ? (
+                              <PruebaSeries />
+                           ) : selectedResource.id === "comp8" ? (
+                              <PruebaPromedios />
+                           ) : selectedResource.id === "comp9" ? (
+                              <PruebaFrecuencia />
+                           ) : selectedResource.id === "comp10" ? (
+                              <KolmogorovSmirnov />
+                           ) : selectedResource.id === "comp11" ? (
+                              <PruebaPoker />
                            ) : null
                         ) : (
                            <Box sx={{ height: "70vh" }}>

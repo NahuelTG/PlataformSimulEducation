@@ -1,0 +1,71 @@
+.prueba-series-container {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   padding: 20px;
+   font-family: Arial, sans-serif;
+}
+
+.inputs-container {
+   margin-bottom: 20px;
+}
+
+.inputs-container label {
+   display: block;
+   margin-bottom: 10px;
+}
+
+.inputs-container input {
+   padding: 8px;
+   width: 100%;
+   margin-top: 5px;
+   box-sizing: border-box;
+}
+
+.button-group {
+   display: flex;
+   gap: 10px;
+   margin-top: 20px;
+}
+
+button {
+   background-color: black;
+   color: white;
+   padding: 10px 20px;
+   border: none;
+   cursor: pointer;
+}
+
+button:hover {
+   background-color: #333;
+}
+
+.modal-box {
+   background: white;
+   padding: 20px;
+   max-width: 500px;
+   margin: auto;
+   border-radius: 8px;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.code-box {
+   max-height: 700px; /* Limita la altura máxima */
+   max-width: 100%; /* Ajusta el ancho al contenedor */
+   overflow-x: auto; /* Scroll horizontal */
+   overflow-y: auto; /* Scroll vertical */
+   white-space: pre; /* Mantiene los espacios en blanco */
+   border: 1px solid #ddd; /* Borde para distinguir el contenido */
+   background-color: #f9f9f9; /* Fondo ligeramente gris */
+}
+
+.chart-container {
+   margin-bottom: 20px;
+   text-align: center;
+}
+
+.chart-placeholder {
+   margin-bottom: 20px;
+   text-align: center;
+   color: #999;
+}
