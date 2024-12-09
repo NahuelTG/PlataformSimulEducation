@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
-import './GeneradorCongruencialMixto.css';
+import './GeneradorCongruencial.css';
 
 function LCG(seed, a, c, m) {
   let X = seed;
