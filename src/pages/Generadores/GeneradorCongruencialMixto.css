@@ -77,9 +77,17 @@
     color: white; /* Mantiene el texto blanco */
 }
 
+.results-section-container {
+    width: 100%;
+    overflow: auto; /* Permite el desplazamiento si es necesario */
+    max-height: 450px; /* Ajusta la altura máxima según tus necesidades */
+}
+
 .results-section-container table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed; /* Permite que las celdas se ajusten */
+    overflow-x: auto; /* Scroll horizontal si es necesario */
 }
 
 .results-section-container th,
@@ -87,6 +95,7 @@
     border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
+    word-wrap: break-word; /* Ajusta el contenido para que se divida en varias líneas */
 }
 
 .results-section-container th {
