@@ -18,7 +18,7 @@ import ViewCourse from "./pages/DetallesCurso/ViewCourse";
 import ProvarCodigo from "./pages/PruevaDeCodigoPlano/Pruevadecodigo";
 import SearchResults from "./pages/busqueda/SearchResults";
 import VideoCall from "./pages/videocall/VideoCall";
-import GroupTasksBoard from "./pages/Tareas/GroupTasksBoard";
+import GroupTasksBoard from "./pages/Tareas/GroupTasksBoard.jsx";
 import TaskDetails from "./pages/Tareas/TaskDetails";
 import Inicio from "./pages/Inicio";
 import Mensajes from "./pages/Mensajeria/Mensajes";
@@ -91,7 +91,7 @@ function getHomeElement(roleC) {
    switch (roleC) {
       case "admin":
          return <Navigate to="/Admin/inicio" replace />;
-         
+
       case "usuario":
          return (
             <div>
