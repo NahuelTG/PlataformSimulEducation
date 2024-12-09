@@ -258,9 +258,21 @@ const Inicio = () => {
                                 )}
                             </Grid>
                             <Grid item xs={12}>
-                                <Button variant="contained" color="success" fullWidth type="submit">
-                                    Crear Grupo
-                                </Button>
+                            <Button
+                                variant="contained"
+                                fullWidth
+                                type="submit"
+                                sx={{
+                                    backgroundColor: "black",
+                                    color: "white",
+                                    "&:hover": {
+                                    backgroundColor: "gray",
+                                    },
+                                }}
+                            >
+                                Craer Grupo
+                            </Button>
+
                             </Grid>
                         </Grid>
                     </form>
@@ -316,8 +328,19 @@ const Inicio = () => {
                         <Button onClick={() => setOpenEditModal(false)} sx={{ mr: 2 }}>
                             Cancelar
                         </Button>
-                        <Button onClick={handleEditSave} variant="contained">
-                            Guardar
+                        <Button
+                        variant="contained"
+                        onClick={handleEditSave}
+                        type="submit"
+                        sx={{
+                            backgroundColor: "black",
+                            color: "white",
+                            "&:hover": {
+                            backgroundColor: "gray", 
+                            },
+                        }}
+                        >
+                        Guardar
                         </Button>
                     </Box>
                 </Box>

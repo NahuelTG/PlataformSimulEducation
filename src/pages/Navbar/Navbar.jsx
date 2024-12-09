@@ -360,7 +360,10 @@ const Navbar = () => {
                   <span className={styles.label}>Video llamada</span>
                   <FontAwesomeIcon icon={faVideo} />
                </NavLink>
-               <Foro />
+               <NavLink className={({ isActive }) => `${isActive && styles.active} ${styles.nav__item}`} to="/User/ForoEstudiante">
+                  <span className={styles.label}>Foro</span>
+                  <FontAwesomeIcon icon={IconForo} />
+               </NavLink>
                <div className={styles.nav__item}>
                   <span className={styles.label}>
                      <input
@@ -397,7 +400,10 @@ const Navbar = () => {
                   <img src={VideoCall} alt="" />
                   <span className={styles.label}>Video llamada</span>
                </NavLink>
-               <Foro />
+               <NavLink className={() => `${styles.active} ${styles.nav__item}`} to="/User/ForoEstudiante">
+                  <img src={IconForo} alt="" />
+                  <span className={styles.label}>Forop</span>
+               </NavLink>
                <button className={`${menuOpen ? styles.userInfoActive : ""} ${styles.buttonPerfil}`} onClick={toggleMenu} ref={dropdownRef}>
                   <img src={Perfil} alt="" />
                   <span className={styles.userName}>{currentUser.username}</span>

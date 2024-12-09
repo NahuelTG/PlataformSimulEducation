@@ -1,0 +1,104 @@
+.cardContent {
+   display: flex;
+   flex-wrap: wrap; /* Permite que las tarjetas salten a la siguiente fila si no caben */
+   gap: 16px; /* Espaciado entre las tarjetas */
+   justify-content: center; /* Centra las tarjetas horizontalmente */
+}
+
+.cardRecursos {
+   padding-inline: 16px;
+   padding-top: 16px;
+}
+
+.cardActionsRecursos {
+   padding-inline: 16px;
+   padding-bottom: 16px;
+}
+
+/* Media query para pantallas pequeñas */
+@media (max-width: 600px) {
+   .cardContent {
+      justify-content: center; /* Asegura que las tarjetas estén centradas */
+   }
+
+   .cardRecursos {
+      width: 100%; /* Las tarjetas ocuparán todo el ancho disponible */
+   }
+}
+.cardContentDialog {
+   display: flex;
+   flex-wrap: wrap; /* Permite que las tarjetas se ajusten a nuevas filas */
+   gap: 16px; /* Espaciado entre las tarjetas */
+   justify-content: center; /* Centra las tarjetas */
+   background-color: #f0f0f0; /* Fondo ligeramente gris para resaltar */
+   padding: 16px;
+   border-radius: 10px;
+   border: 2px solid black;
+}
+
+button,
+.MuiIconButton-root {
+   color: black;
+   background-color: white;
+   border: 1px solid black;
+   border-radius: 5px;
+   padding: 8px 12px;
+   transition: background-color 0.3s ease;
+}
+
+.buttonCancelar {
+   background-color: black;
+   color: rgb(255, 255, 255);
+   border-color: white;
+}
+
+.buttonCancelar:hover {
+   background-color: rgb(98, 145, 255);
+   color: rgb(255, 255, 255);
+   border-color: white;
+}
+
+.buttonGuardar {
+   background-color: rgb(255, 255, 255);
+   color: rgb(0, 0, 0);
+   border-color: rgb(0, 0, 0);
+}
+
+.buttonGuardar:hover {
+   background-color: rgb(255, 101, 101);
+   color: rgb(255, 255, 255);
+   border-color: white;
+}
+
+button:hover,
+.MuiIconButton-root:hover {
+   background-color: black;
+   color: rgb(255, 0, 0);
+   border-color: white;
+}
+
+.MuiTypography-root {
+   color: black;
+}
+
+.MuiDialog-paper {
+   background-color: white;
+   color: black;
+   border: 2px solid black;
+   border-radius: 10px;
+   padding: 20px;
+}
+
+.MuiDialogTitle-root {
+   font-size: 18px;
+   font-weight: bold;
+}
+
+.MuiDialogActions-root {
+   justify-content: center;
+}
+
+.MuiDialogContentText-root {
+   color: black;
+   font-size: 14px;
+}

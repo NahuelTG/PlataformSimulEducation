@@ -178,49 +178,72 @@ class Rextester {
 
   return (
     <div className="lcg-container">
-      <div className="left-container">
-        <div className="chart-container">
-          <h3>Gráfica de Números Generados</h3>
-          <Line data={data} options={options} />
-        </div>
-        <div className="code-section">
-          <button onClick={openModal}><h4>Ver Código Java de Transformada Inversa</h4></button>
-          <Modal isOpen={isModalOpen} onClose={closeModal}>
-            <h3>Código Java para Transformada Inversa:</h3>
-            <pre>{cod}</pre>
-          </Modal>
-        </div>
+      {/* Botones principales y secundarios en una fila */}
+      <div className="buttons">
+        <button onClick={handleGenerate}>Generar Números</button>
+        <button onClick={handleReset}>Resetear Generador</button>
+        <button onClick={openModal}>Ver Código Java</button>
+        <button onClick={openNumbersModal} disabled={numbers.length === 0}>
+          Mostrar Números Generados
+        </button>
       </div>
-      <div className="right-container">
-        <div className="inputs-container">
-          <h3>Valores</h3>
-          <label>
-            Lambda (λ):
-            <input
-              type="number"
-              value={lambda}
-              onChange={(e) => setLambda(parseFloat(e.target.value))}
-              onBlur={handleBlur(setLambda)}
-              step="0.1"
-              min="0.1"
-            />
-          </label>
-        </div>
-        <div className="equation">
+  
+      {/* Gráfica */}
+      <div className="chart-container">
+        <h3>Gráfica de Números Generados</h3>
+        <Line data={data} options={options} />
+      </div>
+  
+      {/* Ecuación en tabla */}
+      <div className="equation">
+        <h3>Tabla de valores dados:</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Parámetro</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Lambda (λ)</td>
+              <td>{lambda}</td>
+            </tr>
+            <tr>
+              <td>Ecuación</td>
+              <td>{form}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div className="equation">
           <h3>Ecuación:</h3>
           <p>{form}</p>
-        </div>
-        <div className="buttons">
-          <button onClick={handleGenerate}>Generar Números</button>
-          <button onClick={handleReset}>Resetear Generador</button>
-        </div>
-        <h3>Lista Números Aleatorios</h3>
-        <div className="buttons">
-        <button onClick={openNumbersModal} disabled={numbers.length === 0}>Mostrar Números Generados</button>
-      
-        </div>
-       
       </div>
+
+      {/* Inputs */}
+      <div className="inputs-container">
+        <h3>Valores</h3>
+        <label>
+          Lambda (λ):
+          <input
+            type="number"
+            value={lambda}
+            onChange={(e) => setLambda(parseFloat(e.target.value))}
+            onBlur={handleBlur(setLambda)}
+            step="0.1"
+            min="0.1"
+          />
+        </label>
+      </div>
+
+  
+      {/* Modal para código y lista de números */}
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <h3>Código Java para Transformada Inversa:</h3>
+        <pre>{cod}</pre>
+      </Modal>
       <Modal isOpen={isNumbersModalOpen} onClose={closeNumbersModal}>
         <h3>Números Generados:</h3>
         <ul>
@@ -231,6 +254,7 @@ class Rextester {
       </Modal>
     </div>
   );
+  
 }
 
 export default InverseTransformComponent;
