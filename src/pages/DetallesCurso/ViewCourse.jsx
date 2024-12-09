@@ -343,8 +343,8 @@ const ViewCourse = () => {
                         ) : (
                            <Box sx={{ height: "70vh" }}>
                               <Typography variant="body1">{selectedResource.description}</Typography>
-                              <Worker workerUrl={`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`}>
-                              <Viewer fileUrl={selectedResource.url} plugins={[defaultLayoutPluginInstance]} />
+                              <Worker workerUrl={`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js`}>
+                                 <Viewer fileUrl={selectedResource.url} plugins={[defaultLayoutPluginInstance]} />
                               </Worker>
                            </Box>
                         )}
