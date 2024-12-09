@@ -124,9 +124,7 @@ h6 span {
   -o-backface-visibility: hidden;
   backface-visibility: hidden;
 }
-.card-back {
-  transform: rotateY(180deg);
-}
+
 .checkbox:checked ~ .card-3d-wrap .card-3d-wrapper {
   transform: rotateY(180deg);
 }
@@ -292,8 +290,8 @@ h6 span {
   
 }
 #practice {
-  margin-top: 45px;
-  margin-left: 81px;
+  margin-top: 11px;
+  margin-left: 142px;
 }
 
 .nose {

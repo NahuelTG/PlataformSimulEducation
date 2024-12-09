@@ -55,8 +55,8 @@ const Landing = () => {
           <div></div>
         </div>
         <div className="menu">
-          <button className="about">Acerca de</button>
-          <button className="about">Contacto</button>
+          <button className="about">        </button>
+          <button className="about">        </button>
           <a className="pricing" onClick={onPricingClick}>
             UMSS
           </a>
@@ -65,18 +65,6 @@ const Landing = () => {
           </a>
         </div>
       </div>
-      {isVisible && (
-      <div className={`menu ${menuActive ? 'active' : ''}`} style={{marginLeft: '30px'}}>
-          <button className="about">Acerca de</button>
-          <button className="about">Contacto</button>
-          <a className="pricing" onClick={onPricingClick}>
-            UMSS
-          </a>
-          <a className="pricing" onClick={onSupportClick}>
-            FCYT
-          </a>
-      </div>
-      )}
       
       <div className="content">
         <div className="landing-content">
