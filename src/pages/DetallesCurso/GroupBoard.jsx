@@ -4,25 +4,7 @@ import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage
 import { firestore, storage } from "../../connection/firebaseConfig";
 import { UserContext } from "../../context/UserContext";
 import { SearchContext } from "../../context/SearchContext";
-import {
-   Box,
-   Button,
-   Container,
-   IconButton,
-   Modal,
-   Table,
-   TableBody,
-   TableCell,
-   TableContainer,
-   TableHead,
-   TableRow,
-   Typography,
-   Paper,
-   CircularProgress,
-   Snackbar,
-   Grid,
-} from "@mui/material";
-import { Delete, CloudUpload } from "@mui/icons-material";
+import { Box, Button, Container, Modal, Typography, CircularProgress, Snackbar, Grid } from "@mui/material";
 import { Worker, Viewer } from "@react-pdf-viewer/core";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
