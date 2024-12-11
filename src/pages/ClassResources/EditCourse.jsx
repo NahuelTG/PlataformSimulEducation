@@ -290,13 +290,23 @@ const EditCourse = () => {
          {/* Botón Guardar en la parte superior */}
          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px", marginTop: "20px" }}>
             <Button
-               variant="contained"
+               variant="outlined"
                onClick={handleSave}
                style={{
                   color: "white",
-                  backgroundColor: "black",
+                  borderColor: "black",
+                  background: "black",
                   padding: "10px 20px",
                   fontSize: "16px",
+                  transition: "background-color 0.3s, color 0.3s",
+               }}
+               onMouseOver={(e) => {
+                  e.target.style.background = "white";
+                  e.target.style.color = "black";
+               }}
+               onMouseOut={(e) => {
+                  e.target.style.background = "black";
+                  e.target.style.color = "white";
                }}
             >
                Guardar
@@ -425,10 +435,26 @@ const EditCourse = () => {
                               </Typography>
                            </div>
                            <div className={styles.cardActionsRecursos}>
-                              <IconButton onClick={() => handleDeleteExistingFile(index, file)}>
+                              <IconButton
+                                 onClick={() => handleDeleteExistingFile(index, file)}
+                                 sx={{
+                                    color: "black",
+                                    "&:hover": {
+                                       color: "red",
+                                    },
+                                 }}
+                              >
                                  <DeleteIcon />
                               </IconButton>
-                              <IconButton onClick={() => handleEditExistingFile(index, file)}>
+                              <IconButton
+                                 onClick={() => handleEditExistingFile(index, file)}
+                                 sx={{
+                                    color: "black",
+                                    "&:hover": {
+                                       color: "blue",
+                                    },
+                                 }}
+                              >
                                  <EditIcon />
                               </IconButton>
                            </div>
@@ -449,9 +475,19 @@ const EditCourse = () => {
                         variant="outlined"
                         component="span"
                         style={{
-                           color: "black",
+                           color: "white",
                            borderColor: "black",
                            marginTop: "16px",
+                           background: "black",
+                           transition: "background-color 0.3s, color 0.3s",
+                        }}
+                        onMouseOver={(e) => {
+                           e.target.style.background = "white";
+                           e.target.style.color = "black";
+                        }}
+                        onMouseOut={(e) => {
+                           e.target.style.background = "black";
+                           e.target.style.color = "white";
                         }}
                      >
                         Selecciona los Recursos

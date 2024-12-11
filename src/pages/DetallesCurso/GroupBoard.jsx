@@ -4,25 +4,7 @@ import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage
 import { firestore, storage } from "../../connection/firebaseConfig";
 import { UserContext } from "../../context/UserContext";
 import { SearchContext } from "../../context/SearchContext";
-import {
-   Box,
-   Button,
-   Container,
-   IconButton,
-   Modal,
-   Table,
-   TableBody,
-   TableCell,
-   TableContainer,
-   TableHead,
-   TableRow,
-   Typography,
-   Paper,
-   CircularProgress,
-   Snackbar,
-   Grid,
-} from "@mui/material";
-import { Delete, CloudUpload } from "@mui/icons-material";
+import { Box, Button, Container, Modal, Typography, CircularProgress, Snackbar, Grid } from "@mui/material";
 import { Worker, Viewer } from "@react-pdf-viewer/core";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
@@ -274,7 +256,6 @@ const GroupBoard = () => {
                   p: 4,
                   display: "flex",
                   flexDirection: "column",
-                  justifyContent: "space-between",
                }}
             >
                <Typography
@@ -290,126 +271,133 @@ const GroupBoard = () => {
                   Subir Archivo
                </Typography>
 
-               {loading ? (
-                  <Box
-                     sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        flex: 1,
-                     }}
-                  >
-                     <CircularProgress />
-                  </Box>
-               ) : fileUrl ? (
-                  <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-                     <Typography
-                        variant="body1"
-                        sx={{
-                           fontWeight: "medium",
-                           color: "black",
-                           marginBottom: 2,
-                        }}
-                     >
-                        Archivo Subido:
-                     </Typography>
-                     <Worker workerUrl={`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js`}>
-                        <Viewer fileUrl={fileUrl} plugins={[defaultLayoutPluginInstance]} />
-                     </Worker>
+               <Box
+                  sx={{
+                     flex: 1, // Permite que este contenedor ocupe el espacio restante
+                     overflowY: "auto", // Agrega scroll vertical solo cuando es necesario
+                  }}
+               >
+                  {loading ? (
                      <Box
                         sx={{
-                           marginTop: "auto",
-                           textAlign: "center",
+                           display: "flex",
+                           justifyContent: "center",
+                           alignItems: "center",
+                           flex: 1,
                         }}
                      >
-                        {grade === "none" ? (
-                           <Button
-                              variant="contained"
-                              sx={{
-                                 bgcolor: "black",
-                                 color: "white",
-                                 ":hover": {
-                                    bgcolor: "gray",
-                                 },
-                                 width: "100%",
-                                 mt: 2,
-                                 mb: 2,
-                              }}
-                              onClick={handleDeleteFile}
-                           >
-                              Eliminar
-                           </Button>
-                        ) : (
-                           <Button
-                              variant="contained"
-                              sx={{
-                                 bgcolor: "green",
-                                 color: "white",
-                                 ":hover": {
-                                    bgcolor: "darkgreen",
-                                 },
-                                 cursor: "default",
-                                 width: "100%",
-                                 mt: 2,
-                              }}
-                              onClick={handleButtonClick}
-                           >
-                              Calificado: {grade}
-                           </Button>
-                        )}
+                        <CircularProgress />
                      </Box>
-                  </Box>
-               ) : (
-                  <Box
-                     sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        flex: 1,
-                        textAlign: "center",
-                     }}
-                  >
-                     <label
-                        htmlFor="file-upload"
-                        style={{
-                           display: "inline-block",
-                           padding: "10px 20px",
-                           backgroundColor: "black",
-                           color: "white",
-                           borderRadius: "5px",
-                           cursor: "pointer",
-                           textAlign: "center",
-                           marginBottom: "16px",
-                           transition: "background-color 0.3s",
-                        }}
-                        onMouseOver={(e) => (e.target.style.backgroundColor = "gray")}
-                        onMouseOut={(e) => (e.target.style.backgroundColor = "black")}
-                     >
-                        Seleccionar Archivo
-                        <input
-                           id="file-upload"
-                           type="file"
-                           accept="application/pdf"
-                           onChange={handleFileUpload}
-                           style={{ display: "none" }}
-                        />
-                     </label>
-                     <Button
-                        variant="contained"
+                  ) : fileUrl ? (
+                     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+                        <Typography
+                           variant="body1"
+                           sx={{
+                              fontWeight: "medium",
+                              color: "black",
+                              marginBottom: 2,
+                           }}
+                        >
+                           Archivo Subido:
+                        </Typography>
+                        <Worker workerUrl={`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js`}>
+                           <Viewer fileUrl={fileUrl} plugins={[defaultLayoutPluginInstance]} />
+                        </Worker>
+                        <Box
+                           sx={{
+                              marginTop: "auto",
+                              textAlign: "center",
+                           }}
+                        >
+                           {grade === "none" ? (
+                              <Button
+                                 variant="contained"
+                                 sx={{
+                                    bgcolor: "black",
+                                    color: "white",
+                                    ":hover": {
+                                       bgcolor: "gray",
+                                    },
+                                    width: "100%",
+                                    mt: 2,
+                                    mb: 2,
+                                 }}
+                                 onClick={handleDeleteFile}
+                              >
+                                 Eliminar
+                              </Button>
+                           ) : (
+                              <Button
+                                 variant="contained"
+                                 sx={{
+                                    bgcolor: "green",
+                                    color: "white",
+                                    ":hover": {
+                                       bgcolor: "darkgreen",
+                                    },
+                                    cursor: "default",
+                                    width: "100%",
+                                    mt: 2,
+                                 }}
+                                 onClick={handleButtonClick}
+                              >
+                                 Calificado: {grade}
+                              </Button>
+                           )}
+                        </Box>
+                     </Box>
+                  ) : (
+                     <Box
                         sx={{
-                           bgcolor: "black",
-                           color: "white",
-                           ":hover": {
-                              bgcolor: "gray",
-                           },
+                           display: "flex",
+                           flexDirection: "column",
+                           justifyContent: "center",
+                           alignItems: "center",
+                           flex: 1,
+                           textAlign: "center",
                         }}
-                        onClick={handleFileSubmit}
                      >
-                        Subir
-                     </Button>
-                  </Box>
-               )}
+                        <label
+                           htmlFor="file-upload"
+                           style={{
+                              display: "inline-block",
+                              padding: "10px 20px",
+                              backgroundColor: "black",
+                              color: "white",
+                              borderRadius: "5px",
+                              cursor: "pointer",
+                              textAlign: "center",
+                              marginBottom: "16px",
+                              transition: "background-color 0.3s",
+                           }}
+                           onMouseOver={(e) => (e.target.style.backgroundColor = "gray")}
+                           onMouseOut={(e) => (e.target.style.backgroundColor = "black")}
+                        >
+                           Seleccionar Archivo
+                           <input
+                              id="file-upload"
+                              type="file"
+                              accept="application/pdf"
+                              onChange={handleFileUpload}
+                              style={{ display: "none" }}
+                           />
+                        </label>
+                        <Button
+                           variant="contained"
+                           sx={{
+                              bgcolor: "black",
+                              color: "white",
+                              ":hover": {
+                                 bgcolor: "gray",
+                              },
+                           }}
+                           onClick={handleFileSubmit}
+                        >
+                           Subir
+                        </Button>
+                     </Box>
+                  )}
+               </Box>
 
                {message && (
                   <Typography
