@@ -127,7 +127,9 @@
   align-items: flex-start;
   justify-content: flex-start;
   gap: 20px;
+  font-family: 'Poppins', sans-serif; /* Aplica la fuente Poppins */
 }
+
 .get-started-for {
   width: 97px;
   position: relative;
@@ -264,7 +266,7 @@
   max-width: 587px; /* Máximo ancho para pantallas grandes */
   height: auto; /* Mantiene las proporciones */
   left: 6%; /* Ajusta a un 10% del contenedor desde la izquierda */
-  top: 20vh; /* Posiciona un 20% del alto de la ventana desde arriba */
+  top: 100px; /* Posiciona un 20% del alto de la ventana desde arriba */
 }
 .content,
 .design-parent {
@@ -415,23 +417,27 @@
   display: flex;
   flex-wrap: wrap; /* Permite que los elementos pasen a otra fila */
   gap: 20px; /* Espaciado entre filas/columnas */
-  justify-content: center;
-  align-items: flex-start; /* Alinea elementos al inicio verticalmente */
-  padding: 20px;
+  justify-content: center; /* Centra los elementos horizontalmente */
+  align-items: flex-start; /* Alinea los elementos al inicio verticalmente */
+  width: 100%; /* Asegura que el contenedor ocupe todo el ancho disponible */
+  box-sizing: border-box; /* Evita el desbordamiento por márgenes y rellenos */
 }
 
 .landing-container {
   flex: 1;
-  min-width: 300px; /* Tamaño mínimo para responsividad */
+  width: 900px;
+  min-width: 300px;
   max-width: 100%;
-  order: 2; /* Por defecto, el formulario estará abajo */
+  order: 2;
   background: #181616;
-  border-radius: 100px;
-  padding: 39px;
+  border-radius: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  height: 900px;
+  margin-top: 70px;
+  
 }
 
 /* Responsividad: Cambiar el orden en pantallas pequeñas */

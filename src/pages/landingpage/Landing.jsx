@@ -76,10 +76,12 @@ const Landing = () => {
                 )}
                 <div className="heading-text">
                   <div className="vestibulum-placerat">
-                  La plataforma de LMS y centro de contenido integral 
-                  para la simulación de sistemas, ofreciendo una experiencia 
-                  educativa e interactiva, diseñada para los 
-                  estudiantes de la Universidad San Simón.
+
+                  La plataforma es un sistema de gestión de aprendizaje LMS
+                   que permite a los estudiantes de la Universidad San Simón 
+                   acceder a simulaciones interactivas y contenido educativo 
+                   en línea, facilitando su aprendizaje práctico y la aplicación 
+                   de conceptos en tiempo real.
                   </div>
                 </div>
           </div>

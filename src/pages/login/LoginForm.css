@@ -35,17 +35,26 @@ h6 span {
 }
 .section {
   position: relative;
+  
 }
 .sectione {
   position: relative;
-  margin-top: -50px;
+  margin-top: 100px; 
+  padding-top: 69px; 
+  margin: 0px;
 }
+
 .texto {
   margin-bottom: 35px;
-  margin-top: -8px;
-  margin-left: 62px;
+  margin-top: -10px;
+  margin-left: 0; /* Elimina el margen izquierdo para centrar */
+  text-align: center; /* Centra el texto */
   color: black;
+  font-size: 20px;
+  font-weight: bold; /* Aplica negrita */
+  font-family: 'Poppins', sans-serif; /* Usa la fuente Poppins */
 }
+
 .full-height {
   min-height: 80vh;
 }
@@ -99,7 +108,7 @@ h6 span {
   margin-top: 45px;
 }
 .card-3d-wrapper {
-  width: 100%;
+  width: 95%;
   min-height: 100%;
   position: absolute;     
   -webkit-transform-style: preserve-3d;
@@ -109,6 +118,7 @@ h6 span {
 .card-front, .card-back {
   right: -19px;
   width: 100%;
+  padding: 10px;
   min-height: 122%;
   margin-top: -89px;
   background-color: #F5F5F5; /* Fondo de las tarjetas */
@@ -116,7 +126,7 @@ h6 span {
   background-repeat: no-repeat;
   background-size: 300%;
   position: absolute;
-  border-radius: 95px;
+  border-radius: 10px;
   -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
   -webkit-backface-visibility: hidden;
@@ -139,7 +149,7 @@ h6 span {
   display: block;
   margin: 0;
   padding: 0;
-  top: -25px;
+  top: 10px;
 }
 .form-style {
   padding-top: 13px;
@@ -151,7 +161,7 @@ h6 span {
   width: 65%;
   max-width: 70%;
   font-weight: 500;
-  border-radius: 39px;
+  border-radius: 10px;
   font-size: 14px;
   line-height: 22px;
   letter-spacing: 0.5px;
@@ -286,12 +296,12 @@ h6 span {
 }
 
 .option {
-  font-size: 15px;
+  font-size: 20px;
   
 }
 #practice {
-  margin-top: 11px;
-  margin-left: 142px;
+  margin-top: -120px;
+  margin-left: 120px;
 }
 
 .nose {
@@ -437,7 +447,11 @@ h6 span {
 }
 
 #register {
-  margin-left: 64px;
-  margin-top: -69px;
+  margin: -30px auto 0 auto; /* Ajusta el margen superior para bajarlo */
   color: black;
+  text-align: center; /* Centra el texto */
+  font-size: 20px;
+  font-weight: bold; /* Aplica negrita */
+  font-family: 'Poppins', sans-serif;
+  display: block; /* Asegura que el elemento sea tratado como bloque */
 }
