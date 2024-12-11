@@ -466,12 +466,12 @@ const EditCourse = () => {
                <DialogContentText>¿Estás seguro de que deseas eliminar este recurso?</DialogContentText>
             </DialogContent>
             <DialogActions>
-               <Button onClick={() => setOpenDialog(false)} color="primary">
+               <button className={styles.btn_white} onClick={() => setOpenDialog(false)}>
                   Cancelar
-               </Button>
-               <Button onClick={confirmDeleteFile} color="primary" autoFocus>
+               </button>
+               <button className={styles.btn_black} onClick={confirmDeleteFile} autoFocus>
                   Eliminar
-               </Button>
+               </button>
             </DialogActions>
          </Dialog>
 

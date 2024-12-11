@@ -402,7 +402,7 @@ const Navbar = () => {
                </NavLink>
                <NavLink className={() => `${styles.active} ${styles.nav__item}`} to="/User/ForoEstudiante">
                   <img src={IconForo} alt="" />
-                  <span className={styles.label}>Forop</span>
+                  <span className={styles.label}>Foro</span>
                </NavLink>
                <button className={`${menuOpen ? styles.userInfoActive : ""} ${styles.buttonPerfil}`} onClick={toggleMenu} ref={dropdownRef}>
                   <img src={Perfil} alt="" />
