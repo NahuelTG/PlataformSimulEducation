@@ -74,14 +74,6 @@ const Landing = () => {
                     <img className="frame-icon" alt="" src="/frame.svg" />
                   </div>
                 )}
-                <div className="heading-text">
-                  <div className="vestibulum-placerat">
-                  La plataforma de LMS y centro de contenido integral 
-                  para la simulación de sistemas, ofreciendo una experiencia 
-                  educativa e interactiva, diseñada para los 
-                  estudiantes de la Universidad San Simón.
-                  </div>
-                </div>
           </div>
           
           <div className="landing-container">

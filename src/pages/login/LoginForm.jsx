@@ -217,131 +217,136 @@ const LoginForm = () => {
 
     return (
     
-        <div className="sectione mb-4 pb-3">                
+        <div className="sectione mb-4 pb-3">
+        <div className="auth-toggle text-center">
             <h6 className="mb-0 pb-3" id="practice">
                 <a className="option" onClick={() => setShowLogin(true)}>Inicia sesión</a>
                 <span> </span>
                 <a className="option" onClick={() => setShowLogin(false)}>Regístrate</a>
             </h6>
-            {showLogin ? (
-                <div className="card-3d-wrap">
-                    <div className="card-3d-wrapper">
-                            <div className="card-front">
-                                <div className="center-wrap">
-                                    <div className="section text-center">
-                                        <h4 className="texto">Inicio sesión</h4>
-                                            <div className="form-group">
-                                                <input
-                                                    type="email"
-                                                    value={email}
-                                                    onChange={handleEmailChange}
-                                                    name="logemail"
-                                                    className={`form-style ${logineError ? 'input-error' : ''}`}
-                                                    placeholder=" Correo"
-                                                    id="logemail"
-                                                    autoComplete="off"
-                                                />
-                                                <MailOutlineIcon className="input-icon" fontSize="large"/>
-                                                {(logineError) && !loginpError &&<p className="error-text">{logineError}</p>}
-                                            </div>
-                                            <div className="form-group mt-2">
-                                                <input
-                                                    type={showPassword ? 'text' : 'password'}
-                                                    value={password}
-                                                    onChange={handlePasswordChange}
-                                                    name="logpass"
-                                                    className={`form-style ${loginpError ? 'input-error' : ''}`}
-                                                    placeholder=" Contraseña"
-                                                    id="logpass"
-                                                    autoComplete="off"
-                                                />  
-                                                <HttpsIcon className="input-icon" fontSize="large" />
-                                                <button className="toggle-password" type="button" onClick={togglePasswordVisibility}>
-                                                    {showPassword ? <FaEyeSlash />: <FaEye /> }
-                                                </button>
-                                                {/* <FaLock className="input-icon" /> */}
-                                                {(loginpError) && !logineError&&<p className="error-text">{loginpError}</p>}
-                                                {loginpError && logineError && <p className="error-text">Verifique sus credenciales.</p>}
-                                            </div>
-                                            <button className="btn mt-4" id="ingresar" onClick={handleLogin} disabled={isRegistering}>
-                                                {isRegistering ? <CircularProgress size={24} color="inherit" /> : 'Ingresar'}
-                                            </button>
-                                        <p className="mb-0 mt-4 text-center"><Link to ="/Gest/Recuperar" className="link">¿Olvidaste tu Contraseña?</Link></p>
-                                    </div>
+        </div>
+    
+        {showLogin ? (
+            <div className="card-3d-wrap">
+                <div className="card-3d-wrapper">
+                    <div className="card-front">
+                        <div className="center-wrap">
+                            <div className="section text-center">
+                                <h4 className="texto">Inicio sesión</h4>
+                                <div className="form-group">
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={handleEmailChange}
+                                        name="logemail"
+                                        className={`form-style ${logineError ? 'input-error' : ''}`}
+                                        placeholder="Correo"
+                                        id="logemail"
+                                        autoComplete="off"
+                                    />
+                                    <MailOutlineIcon className="input-icon" fontSize="large" />
+                                    {logineError && !loginpError && <p className="error-text">{logineError}</p>}
                                 </div>
+                                <div className="form-group mt-2">
+                                    <input
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={password}
+                                        onChange={handlePasswordChange}
+                                        name="logpass"
+                                        className={`form-style ${loginpError ? 'input-error' : ''}`}
+                                        placeholder="Contraseña"
+                                        id="logpass"
+                                        autoComplete="off"
+                                    />
+                                    <HttpsIcon className="input-icon" fontSize="large" />
+                                    <button className="toggle-password" type="button" onClick={togglePasswordVisibility}>
+                                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                    </button>
+                                    {loginpError && !logineError && <p className="error-text">{loginpError}</p>}
+                                    {loginpError && logineError && <p className="error-text">Verifique sus credenciales.</p>}
+                                </div>
+                                <button className="btn mt-4" id="ingresar" onClick={handleLogin} disabled={isRegistering}>
+                                    {isRegistering ? <CircularProgress size={24} color="inherit" /> : 'Ingresar'}
+                                </button>
+                                <p className="mb-0 mt-4 text-center">
+                                    <Link to="/Gest/Recuperar" className="link">¿Olvidaste tu Contraseña?</Link>
+                                </p>
                             </div>
                         </div>
                     </div>
-                ) : (
-                    <div className="card-3d-wrap">
-                        <div className="card-3d-wrapper">
-                            <div className="card-back">
-                                <div className="center-wrap">
-                                    <div className="section text-center">
-                                    <h4 id="register" className="mb-4 pb-3">Resgristrate</h4>
-                                        <div className="form-group">
-                                            <input
-                                                type="text"
-                                                value={username}
-                                                onChange={handleUsernameChange}
-                                                name="logname"
-                                                className={`form-style ${usernameError ? 'input-error' : ''}`}
-                                                placeholder="Nombre de Usuario"
-                                                id="logname"
-                                                autoComplete="off"
-                                            />
-                                            <FaUser className="input-icon" style={{ top: '19px' }}/>
-                                            {usernameError && !emailError && !passwordError &&<p className="error-text">{usernameError}</p>}
-                                        </div>
-                                        <div className="form-group mt-2">
-                                            <input
-                                                type="text"
-                                                value={email}
-                                                onChange={handleEmailChange}
-                                                name="logemail"
-                                                className={`form-style ${emailError || emailDuplicateError ? 'input-error' : ''}`}
-                                                placeholder="Correo Institucional"
-                                                id="logemail1"
-                                                autoComplete="off"
-                                            />
-                                            <FaAt className="input-icon"  style={{ top: '19px' }}/>
-                                            {(emailError || emailDuplicateError) && !usernameError && !passwordError &&
-                                            <p className="error-text">{emailError || emailDuplicateError}</p>}
-                                        </div>
-                                        <div className="form-group mt-2">
-                                            <input
-                                                type={showPassword ? 'text' : 'password'}
-                                                value={password}
-                                                onChange={handlePasswordChange}
-                                                name="logpass"
-                                                className={`form-style ${passwordError ? 'input-error' : ''}`}
-                                                placeholder="Contraseña"
-                                                id="logpass1"
-                                                autoComplete="off"
-                                            />
-                                            <FaLock className="input-icon" style={{ top: '19px' }}/>
-                                            <button className="toggle-password" type="button" onClick={togglePasswordVisibility}>
-                                                {showPassword ? <FaEyeSlash />:<FaEye />}
-                                            </button>
-                                            {((usernameError&&emailError)||(usernameError&&passwordError)) && <p className="error-text">Verifique sus datos.</p>}
-                                            {passwordError && !usernameError && !emailError && <p className="error-text">{passwordError}</p>}
-                                        </div>
-                                        <button className="btn mt-4" onClick={handleRegister} disabled={isRegistering}>
-                                            {isRegistering ? <CircularProgress size={24} color="inherit" /> : 'Registrar'}
-                                        </button>
-                                    </div>
+                </div>
+            </div>
+        ) : (
+            <div className="card-3d-wrap">
+                <div className="card-3d-wrapper">
+                    <div className="card-back">
+                        <div className="center-wrap">
+                            <div className="section text-center">
+                                <h4 id="register" className="mb-4 pb-3">Regístrate</h4>
+                                <div className="form-group">
+                                    <input
+                                        type="text"
+                                        value={username}
+                                        onChange={handleUsernameChange}
+                                        name="logname"
+                                        className={`form-style ${usernameError ? 'input-error' : ''}`}
+                                        placeholder="Nombre de Usuario"
+                                        id="logname"
+                                        autoComplete="off"
+                                    />
+                                    <FaUser className="input-icon" style={{ top: '19px' }} />
+                                    {usernameError && !emailError && !passwordError && <p className="error-text">{usernameError}</p>}
                                 </div>
+                                <div className="form-group mt-2">
+                                    <input
+                                        type="text"
+                                        value={email}
+                                        onChange={handleEmailChange}
+                                        name="logemail"
+                                        className={`form-style ${emailError || emailDuplicateError ? 'input-error' : ''}`}
+                                        placeholder="Correo Institucional"
+                                        id="logemail1"
+                                        autoComplete="off"
+                                    />
+                                    <FaAt className="input-icon" style={{ top: '19px' }} />
+                                    {(emailError || emailDuplicateError) && !usernameError && !passwordError &&
+                                        <p className="error-text">{emailError || emailDuplicateError}</p>}
+                                </div>
+                                <div className="form-group mt-2">
+                                    <input
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={password}
+                                        onChange={handlePasswordChange}
+                                        name="logpass"
+                                        className={`form-style ${passwordError ? 'input-error' : ''}`}
+                                        placeholder="Contraseña"
+                                        id="logpass1"
+                                        autoComplete="off"
+                                    />
+                                    <FaLock className="input-icon" style={{ top: '19px' }} />
+                                    <button className="toggle-password" type="button" onClick={togglePasswordVisibility}>
+                                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                    </button>
+                                    {((usernameError && emailError) || (usernameError && passwordError)) && <p className="error-text">Verifique sus datos.</p>}
+                                    {passwordError && !usernameError && !emailError && <p className="error-text">{passwordError}</p>}
+                                </div>
+                                <button className="btn mt-4" onClick={handleRegister} disabled={isRegistering}>
+                                    {isRegistering ? <CircularProgress size={24} color="inherit" /> : 'Registrar'}
+                                </button>
                             </div>
-                        </div> 
-                    </div>   
-                )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )}
+    
         <Snackbar
             open={openSnackbar}
             autoHideDuration={3000}
             onClose={handleCloseSnackbar}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         >
-        <MuiAlert
+            <MuiAlert
                 elevation={6}
                 variant="filled"
                 onClose={handleCloseSnackbar}
@@ -351,6 +356,7 @@ const LoginForm = () => {
             </MuiAlert>
         </Snackbar>
     </div>
+    
     );
 }
 

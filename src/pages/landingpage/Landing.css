@@ -259,25 +259,22 @@
   top: 170px
 } */
 .frame-icon {
-  position: absolute;
-  width: 50%; /* Ajusta al 50% del ancho del contenedor */
-  max-width: 587px; /* Máximo ancho para pantallas grandes */
-  height: auto; /* Mantiene las proporciones */
-  left: 6%; /* Ajusta a un 10% del contenedor desde la izquierda */
-  top: 20vh; /* Posiciona un 20% del alto de la ventana desde arriba */
+  position: relative; 
+  display: block; 
+  width: 80%; 
+  max-width: 300px; 
+  height: auto; 
+  top: 40px; /* Ajusta este valor para mover el icono hacia abajo */
 }
+
 .content,
 .design-parent {
   display: flex;
-  flex-direction: row;
+  justify-content: center;
   align-items: center;
-  justify-content: flex-start;
+  height: 100%; /* O un valor ajustado a tu diseño */
 }
 
-.design-parent {
-  width: 653px;
-  height: 618px;
-}
 .content {
   align-self: stretch;
   background-color: #F5F5F5; /* Color oscuro para el fondo del contenido */
@@ -330,117 +327,8 @@
   background-color: #919dad; 
 }
 
-@media (max-width: 1068px) {
-  .heading-logo {
-    margin-left: 5vh;
-    margin-bottom: 0vh;
-    margin-right: 5vh;
-  }
-  .design-parent {
-    width: 653px;
-    height: 618px;
-    margin-right: -20px;
-  }
-  .image {
-    height: 100px;
-  }
-}
-@media (max-width: 968px) {
-  .heading-logo {
-    margin-left: 4vh;
-  }
-  .image {
-    height: 100px;
-  }
-}
-@media (max-width: 520px) {
-  .heading-logo {
-    margin-left: 2.5vh;
-    margin-right: 1vh;
-  }
-  .nav-bar {
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    height: auto;
-  }
-  .menu {
-    display: none;
-    flex-direction: column;
-    width: 100%;
-    gap: 20px;
-  }
-  .menu.active {
-    display: flex;
-    margin-top: 10px; /* Asegura que el menú se muestre debajo del navbar */
-  }
-  .hamburger {
-    display: flex;
-  }
-  .content {
-    height: 838px;
-    margin-top: 20px;
-    margin-bottom: 30px;
-  }
-  .hero-06{
-    min-height: 100vh;
-    max-width: 100%;
-    overflow-x: hidden;
-  }
-  .image {
-    height: 60px;
-  }
-  .logo-cloud {
-    margin-top: -40px;
-  }
-}
 
 
 
-/* .landing-container {
-  position: absolute;
-  width: 547px;
-  height: 654px;
-  left: 1085px;
-  top: 135px;
 
-  background: #181616;
-  border-radius: 10px;
 
-} */
-
-.landing-content {
-  display: flex;
-  flex-wrap: wrap; /* Permite que los elementos pasen a otra fila */
-  gap: 20px; /* Espaciado entre filas/columnas */
-  justify-content: center;
-  align-items: flex-start; /* Alinea elementos al inicio verticalmente */
-  padding: 20px;
-}
-
-.landing-container {
-  flex: 1;
-  min-width: 300px; /* Tamaño mínimo para responsividad */
-  max-width: 100%;
-  order: 2; /* Por defecto, el formulario estará abajo */
-  background: #181616;
-  border-radius: 100px;
-  padding: 39px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-/* Responsividad: Cambiar el orden en pantallas pequeñas */
-@media (max-width: 768px) {
-  .landing-logos {
-    order: 2; /* Mueve los logos a la fila 2 */
-  }
-
-  .landing-container {
-    order: 1; /* Mueve el formulario a la fila 1 */
-  }
-}
