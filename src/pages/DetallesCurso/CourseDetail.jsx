@@ -143,7 +143,7 @@ const CourseDetail = () => {
             }} 
             onClick={handleUnsubscribe}
           >
-            Anular Suscripción
+            Salirse del curso
           </Button>
         </Box>  
       ) : (
