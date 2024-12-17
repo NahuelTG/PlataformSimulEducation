@@ -26,17 +26,29 @@ const GroupBoard = () => {
    const defaultLayoutPluginInstance = defaultLayoutPlugin();
    const groupId = groupC;
    const [open, setOpen] = useState(false);
+   const userEmail = currentUser?.email; // Email del usuario actual
 
    useEffect(() => {
       const fetchBoardItems = async () => {
-         const boardCollection = collection(firestore, "groups", groupId, "tasks");
-         const boardSnapshot = await getDocs(boardCollection);
-         const boardData = boardSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-         setBoardItems(boardData);
+         try {
+            const boardCollection = collection(firestore, "groups", groupId, "tasks");
+            const boardSnapshot = await getDocs(boardCollection);
+
+            // Obtener el email del usuario autenticado
+            const userEmail = currentUser?.email;
+            console.log(boardSnapshot);
+            // Filtrar tareas asignadas a "all" o al email del usuario actual
+            const boardData = boardSnapshot.docs
+               .map((doc) => ({ id: doc.id, ...doc.data() }))
+               .filter((task) => task.assignedTo === "all" || task.assignedTo === userEmail);
+            setBoardItems(boardData);
+         } catch (error) {
+            console.error("Error al recuperar las tareas:", error);
+         }
       };
 
       fetchBoardItems();
-   }, [groupId]);
+   }, [groupId, currentUser]);
 
    const checkFilesExist = async (task) => {
       try {
