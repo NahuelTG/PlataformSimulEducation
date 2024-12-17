@@ -60,9 +60,29 @@ const GroupTasksBoard = () => {
                <Typography variant="h4" className={styles.taskTitle}>
                   Tareas y Publicaciones
                </Typography>
-               <Button startIcon={<Add />} className={styles.addButton} onClick={() => setOpenModal(true)}>
+               <Button
+                  startIcon={<Add />}
+                  className={styles.addButton}
+                  onClick={() => setOpenModal(true)}
+                  sx={{
+                     bgcolor: "black", // Fondo negro
+                     color: "white", // Texto blanco
+                     textTransform: "none", // Texto sin mayúsculas automáticas
+                     fontWeight: "bold", // Texto en negrita
+                     padding: "10px 20px", // Espaciado interno
+                     transition: "all 0.3s ease", // Transición suave para hover
+                     "&:hover": {
+                        bgcolor: "gray", // Fondo gris en hover
+                        color: "white", // Mantener el texto blanco en hover
+                     },
+                     "& .MuiButton-startIcon": {
+                        color: "white", // Ícono también en blanco
+                     },
+                  }}
+               >
                   Agregar
                </Button>
+
                <Grid container spacing={3} sx={{ marginTop: 3 }}>
                   {tasks.map((task) => (
                      <Grid item xs={12} key={task.id}>
