@@ -29,16 +29,28 @@ const TaskDetails = () => {
    const [currentSubmission, setCurrentSubmission] = useState(null);
    const [grade, setGrade] = useState("");
    const [filter, setFilter] = useState("all");
+   const [userMap, setUserMap] = useState({}); // Mapa para almacenar userId -> username
 
    useEffect(() => {
       const fetchData = async () => {
          try {
+            // Obtener entregas
             const submissionsData = await getSubmissionsData();
+
+            // Obtener usuarios y crear el mapa userId -> username
+            const usersSnapshot = await getDocs(collection(firestore, "users"));
+            const usersData = {};
+            usersSnapshot.docs.forEach((doc) => {
+               const user = doc.data();
+               usersData[doc.id] = user.username || user.email; // Guarda el username (o email si no hay username)
+            });
+
+            setUserMap(usersData);
             setSubmissions(submissionsData);
             setFilteredSubmissions(submissionsData);
             setLoading(false);
          } catch (error) {
-            console.error("Error fetching submissions:", error);
+            console.error("Error fetching submissions or users:", error);
             setLoading(false);
          }
       };
@@ -160,7 +172,8 @@ const TaskDetails = () => {
                            }}
                         >
                            <Box>
-                              <Typography className={styles.cardTitle}>{submission.userId}</Typography>
+                              <Typography className={styles.cardTitle}>{userMap[submission.userId] || "Usuario Desconocido"}</Typography>
+
                               <Typography className={styles.cardContent}>Entregado: {submission.submittedAt}</Typography>
                               <Typography
                                  className={styles.cardContent}
