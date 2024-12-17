@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { collection, getDocs, addDoc, deleteDoc, doc } from "firebase/firestore";
-import { Box, Button, Container, Modal, TextField, Typography, Grid, IconButton } from "@mui/material";
+import { collection, getDocs, addDoc, deleteDoc, doc, query } from "firebase/firestore";
+import { Box, Button, Container, Modal, TextField, Typography, Grid, IconButton, Autocomplete } from "@mui/material";
 import { Delete, Visibility, Add } from "@mui/icons-material";
 import { firestore, storage } from "../../connection/firebaseConfig";
 import styles from "./GroupTasksBoard.module.css"; // Archivo CSS
+import { UserContext } from "../../context/UserContext";
 
 const GroupTasksBoard = () => {
+   const { currentUser } = useContext(UserContext);
    const { groupId } = useParams();
    const [tasks, setTasks] = useState([]);
    const [openModal, setOpenModal] = useState(false);
@@ -14,6 +16,8 @@ const GroupTasksBoard = () => {
    const [newTaskContent, setNewTaskContent] = useState("");
    const [newTaskType, setNewTaskType] = useState("announcement");
    const navigate = useNavigate();
+   const [contacts, setContacts] = useState([]); // Lista de usuarios
+   const [selectedUser, setSelectedUser] = useState(null); // Usuario seleccionado
 
    useEffect(() => {
       const fetchTasks = async () => {
@@ -26,21 +30,59 @@ const GroupTasksBoard = () => {
       fetchTasks();
    }, [groupId]);
 
-   const handleAddTask = async () => {
-      const tasksCollection = collection(firestore, "groups", groupId, "tasks");
-      await addDoc(tasksCollection, {
-         title: newTaskTitle,
-         content: newTaskContent,
-         type: newTaskType,
-         createdAt: new Date(),
+   useEffect(() => {
+      fetchContacts();
+      console.log("contacto");
+   }, []);
+
+   // Recuperar usuarios desde Firebase
+   const fetchContacts = async () => {
+      const q = query(collection(firestore, "users"));
+      const querySnapshot = await getDocs(q);
+      const users = [];
+
+      // Agregar los usuarios de Firebase al array
+      querySnapshot.forEach((doc) => {
+         const user = doc.data();
+         if (user.email !== currentUser.email) {
+            users.push({ label: user.username, id: user.email }); // Usar email como ID
+         }
       });
-      setOpenModal(false);
-      setNewTaskTitle("");
-      setNewTaskContent("");
-      setNewTaskType("announcement");
-      const tasksSnapshot = await getDocs(tasksCollection);
-      const tasksData = tasksSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setTasks(tasksData);
+
+      // Agregar la opción "Todos"
+      users.unshift({ label: "Todos", id: "all" });
+
+      setContacts(users);
+   };
+
+   // Guardar la tarea en Firestore
+   const handleAddTask = async () => {
+      try {
+         const tasksCollection = collection(firestore, "groups", groupId, "tasks");
+
+         // Crear la tarea
+         await addDoc(tasksCollection, {
+            title: newTaskTitle,
+            content: newTaskContent,
+            type: newTaskType,
+            assignedTo: selectedUser ? selectedUser.id : "all", // Asignar al usuario seleccionado o a todos
+            createdAt: new Date(),
+         });
+
+         // Reiniciar modal y campos
+         setOpenModal(false);
+         setNewTaskTitle("");
+         setNewTaskContent("");
+         setNewTaskType("announcement");
+         setSelectedUser(null);
+
+         // Actualizar lista de tareas
+         const tasksSnapshot = await getDocs(tasksCollection);
+         const tasksData = tasksSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+         setTasks(tasksData);
+      } catch (error) {
+         console.error("Error al agregar la tarea:", error);
+      }
    };
 
    const handleDeleteTask = async (taskId) => {
@@ -168,6 +210,7 @@ const GroupTasksBoard = () => {
                   >
                      Agregar Tarea/Publicación
                   </Typography>
+
                   <TextField
                      fullWidth
                      label="Título"
@@ -246,6 +289,35 @@ const GroupTasksBoard = () => {
                      <option value="announcement">Anuncio</option>
                      <option value="task">Tarea</option>
                   </TextField>
+                  <Autocomplete
+                     options={contacts}
+                     getOptionLabel={(option) => option.label} // Muestra el nombre o "Todos"
+                     onChange={(_event, value) => setSelectedUser(value)} // Actualiza el estado
+                     renderInput={(params) => (
+                        <TextField
+                           {...params}
+                           label="Asignar a usuario"
+                           margin="normal"
+                           InputLabelProps={{
+                              style: { color: "black" },
+                           }}
+                           sx={{
+                              "& .MuiOutlinedInput-root": {
+                                 "& fieldset": {
+                                    borderColor: "black",
+                                 },
+                                 "&:hover fieldset": {
+                                    borderColor: "gray",
+                                 },
+                                 "&.Mui-focused fieldset": {
+                                    borderColor: "black",
+                                 },
+                              },
+                           }}
+                        />
+                     )}
+                  />
+
                   <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
                      <Button
                         onClick={() => setOpenModal(false)}
